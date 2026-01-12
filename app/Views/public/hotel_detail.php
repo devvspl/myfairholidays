@@ -191,24 +191,29 @@
                               <div class="row align-items-center justify-content-start gx-2">
                                  <div class="col-auto">
                                     <div class="square--40 rounded-2 bg-ratting text-light">
-                                       <?php 
-                                       $rating = $hotel['star_rating'] ?? 3;
-                                       $displayRating = number_format(3.5 + ($rating * 0.3), 1);
-                                       echo $displayRating;
-                                       ?>
+                                       <?php
+$rating = $hotel['star_rating'] ?? 3;
+$displayRating = number_format(3.5 + ($rating * 0.3), 1);
+echo $displayRating;
+?>
                                     </div>
                                  </div>
                                  <div class="col-auto text-start">
                                     <div class="text-md text-dark fw-medium">
                                        <?php
-                                       $ratingText = 'Good';
-                                       if ($rating >= 5) $ratingText = 'Exceptional';
-                                       elseif ($rating >= 4) $ratingText = 'Excellent';
-                                       elseif ($rating >= 3) $ratingText = 'Very Good';
-                                       elseif ($rating >= 2) $ratingText = 'Good';
-                                       else $ratingText = 'Fair';
-                                       echo $ratingText;
-                                       ?>
+$ratingText = 'Good';
+if ($rating >= 5)
+    $ratingText = 'Exceptional';
+elseif ($rating >= 4)
+    $ratingText = 'Excellent';
+elseif ($rating >= 3)
+    $ratingText = 'Very Good';
+elseif ($rating >= 2)
+    $ratingText = 'Good';
+else
+    $ratingText = 'Fair';
+echo $ratingText;
+?>
                                     </div>
                                     <div class="text-md text-muted-2">Based on <?= $rating ?> star rating</div>
                                  </div>
@@ -235,36 +240,36 @@
                                  <div class="nearestServ-caps">
                                     <ul class="row align-items-start g-2 p-0 m-0">
                                        <?php if (!empty($hotel['nearby_attractions'])): ?>
-                                          <?php
-                                          // Extract plain text attractions from HTML content
-                                          $attractionsHtml = $hotel['nearby_attractions'];
-                                          // Remove HTML tags and get plain text lines
-                                          $attractionsText = strip_tags($attractionsHtml);
-                                          $attractions = array_filter(explode("\n", $attractionsText));
-                                          $displayAttractions = [];
-                                          
-                                          foreach ($attractions as $attraction) {
-                                             $attraction = trim($attraction);
-                                             if (!empty($attraction) && !preg_match('/^(Cultural|Natural|Entertainment|Day Trip)/i', $attraction)) {
-                                                $displayAttractions[] = $attraction;
-                                             }
-                                          }
-                                          
-                                          foreach (array_slice($displayAttractions, 0, 3) as $attraction):
-                                          ?>
-                                          <li class="col-12 text-muted-2"><?= esc($attraction) ?></li>
-                                          <?php
-                                          endforeach;
-                                          ?>
+                                       <?php
+    // Extract plain text attractions from HTML content
+    $attractionsHtml = $hotel['nearby_attractions'];
+    // Remove HTML tags and get plain text lines
+    $attractionsText = strip_tags($attractionsHtml);
+    $attractions = array_filter(explode("\n", $attractionsText));
+    $displayAttractions = [];
+
+    foreach ($attractions as $attraction) {
+        $attraction = trim($attraction);
+        if (!empty($attraction) && !preg_match('/^(Cultural|Natural|Entertainment|Day Trip)/i', $attraction)) {
+            $displayAttractions[] = $attraction;
+        }
+    }
+
+    foreach (array_slice($displayAttractions, 0, 3) as $attraction):
+        ?>
+                                       <li class="col-12 text-muted-2"><?= esc($attraction) ?></li>
+                                       <?php
+    endforeach;
+?>
                                        <?php else: ?>
-                                          <li class="col-12 text-muted-2"><?= esc($hotel['destination_name'] ?? 'Local Area') ?> (nearby)</li>
-                                          <?php if (!empty($hotel['destination_name'])): ?>
-                                             <li class="col-12 text-muted-2"><?= esc($hotel['destination_name']) ?> Tourist Spots</li>
-                                             <li class="col-12 text-muted-2">Local Shopping Areas</li>
-                                          <?php else: ?>
-                                             <li class="col-12 text-muted-2">Tourist Attractions</li>
-                                             <li class="col-12 text-muted-2">Shopping Centers</li>
-                                          <?php endif; ?>
+                                       <li class="col-12 text-muted-2"><?= esc($hotel['destination_name'] ?? 'Local Area') ?> (nearby)</li>
+                                       <?php if (!empty($hotel['destination_name'])): ?>
+                                       <li class="col-12 text-muted-2"><?= esc($hotel['destination_name']) ?> Tourist Spots</li>
+                                       <li class="col-12 text-muted-2">Local Shopping Areas</li>
+                                       <?php else: ?>
+                                       <li class="col-12 text-muted-2">Tourist Attractions</li>
+                                       <li class="col-12 text-muted-2">Shopping Centers</li>
+                                       <?php endif; ?>
                                        <?php endif; ?>
                                     </ul>
                                  </div>
@@ -280,37 +285,37 @@
                                  <div class="nearestServ-caps">
                                     <ul class="row align-items-start g-2 p-0 m-0">
                                        <?php if (!empty($hotel['transportation_info'])): ?>
-                                          <?php
-                                          // Extract plain text transportation info from HTML content
-                                          $transportHtml = $hotel['transportation_info'];
-                                          // Remove HTML tags and get plain text lines
-                                          $transportText = strip_tags($transportHtml);
-                                          $transportInfo = array_filter(explode("\n", $transportText));
-                                          $displayTransport = [];
-                                          
-                                          foreach ($transportInfo as $transport) {
-                                             $transport = trim($transport);
-                                             if (!empty($transport) && !preg_match('/^(Airport|Local|Public|Parking|Accessibility)/i', $transport)) {
-                                                $displayTransport[] = $transport;
-                                             }
-                                          }
-                                          
-                                          foreach (array_slice($displayTransport, 0, 3) as $transport):
-                                          ?>
-                                          <li class="col-12 text-muted-2"><?= esc($transport) ?></li>
-                                          <?php
-                                          endforeach;
-                                          ?>
+                                       <?php
+    // Extract plain text transportation info from HTML content
+    $transportHtml = $hotel['transportation_info'];
+    // Remove HTML tags and get plain text lines
+    $transportText = strip_tags($transportHtml);
+    $transportInfo = array_filter(explode("\n", $transportText));
+    $displayTransport = [];
+
+    foreach ($transportInfo as $transport) {
+        $transport = trim($transport);
+        if (!empty($transport) && !preg_match('/^(Airport|Local|Public|Parking|Accessibility)/i', $transport)) {
+            $displayTransport[] = $transport;
+        }
+    }
+
+    foreach (array_slice($displayTransport, 0, 3) as $transport):
+        ?>
+                                       <li class="col-12 text-muted-2"><?= esc($transport) ?></li>
+                                       <?php
+    endforeach;
+?>
                                        <?php else: ?>
-                                          <?php if (!empty($hotel['destination_name'])): ?>
-                                             <li class="col-12 text-muted-2">Airport: <?= esc($hotel['destination_name']) ?> Airport</li>
-                                             <li class="col-12 text-muted-2">Metro: <?= esc($hotel['destination_name']) ?> Metro</li>
-                                             <li class="col-12 text-muted-2">Bus: Local Transport Hub</li>
-                                          <?php else: ?>
-                                             <li class="col-12 text-muted-2">Airport: Nearby Airport</li>
-                                             <li class="col-12 text-muted-2">Metro: Local Metro Station</li>
-                                             <li class="col-12 text-muted-2">Bus: Public Transport</li>
-                                          <?php endif; ?>
+                                       <?php if (!empty($hotel['destination_name'])): ?>
+                                       <li class="col-12 text-muted-2">Airport: <?= esc($hotel['destination_name']) ?> Airport</li>
+                                       <li class="col-12 text-muted-2">Metro: <?= esc($hotel['destination_name']) ?> Metro</li>
+                                       <li class="col-12 text-muted-2">Bus: Local Transport Hub</li>
+                                       <?php else: ?>
+                                       <li class="col-12 text-muted-2">Airport: Nearby Airport</li>
+                                       <li class="col-12 text-muted-2">Metro: Local Metro Station</li>
+                                       <li class="col-12 text-muted-2">Bus: Public Transport</li>
+                                       <?php endif; ?>
                                        <?php endif; ?>
                                     </ul>
                                  </div>
@@ -325,10 +330,10 @@
                                  </div>
                                  <div class="nearestServ-caps">
                                     <ul class="row align-items-start g-2 p-0 m-0">
-                                       <?php 
-                                       $hasRestaurant = !empty($hotel['amenities']) && (stripos($hotel['amenities'], 'restaurant') !== false || stripos($hotel['amenities'], 'dining') !== false);
-                                       $hasBar = !empty($hotel['amenities']) && (stripos($hotel['amenities'], 'bar') !== false || stripos($hotel['amenities'], 'lounge') !== false);
-                                       ?>
+                                       <?php
+$hasRestaurant = !empty($hotel['amenities']) && (stripos($hotel['amenities'], 'restaurant') !== false || stripos($hotel['amenities'], 'dining') !== false);
+$hasBar = !empty($hotel['amenities']) && (stripos($hotel['amenities'], 'bar') !== false || stripos($hotel['amenities'], 'lounge') !== false);
+?>
                                        <li class="col-12 text-muted-2">
                                           <?= $hasRestaurant ? 'On-site Restaurant' : 'Restaurants nearby' ?>
                                        </li>
@@ -362,7 +367,7 @@
                               <div class="col-xl-12 col-lg-12 col-md-12 p-0">
                                  <?php if (!empty($hotel['description'])): ?>
                                  <div class="text-md text-muted lh-lg mb-4 hotel-description">
-                                    <?= nl2br(esc($hotel['description'])) ?>
+                                    <?= $hotel['description'] ?>
                                  </div>
                                  <?php else: ?>
                                  <p class="text-muted mb-4">Experience comfort and luxury at <?= esc($hotel['name']) ?>. Our hotel offers excellent service and modern amenities for a memorable stay.</p>
@@ -389,20 +394,20 @@
                                        <?php if (!empty($hotel['amenities'])): ?>
                                        <ul class="row align-items-center p-0 mb-0">
                                           <?php
-    $amenities = explode(',', $hotel['amenities']);
-    foreach ($amenities as $amenity):
-        $amenity = trim($amenity);
-        if (!empty($amenity)):
-            ?>
+                                          $amenities = explode(',', $hotel['amenities']);
+                                          foreach ($amenities as $amenity):
+                                             $amenity = trim($amenity);
+                                             if (!empty($amenity)):
+                                                   ?>
                                           <li class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
                                              <div class="d-flex align-items-center mb-3">
                                                 <i class="fa-solid fa-check text-success me-2"></i><?= esc($amenity) ?>
                                              </div>
                                           </li>
                                           <?php
-        endif;
-    endforeach;
-    ?>
+                                             endif;
+                                          endforeach;
+                                          ?>
                                        </ul>
                                        <?php else: ?>
                                        <ul class="row align-items-center p-0 mb-0">
@@ -485,45 +490,19 @@
                         </div>
                      </div>
                   </div>
-                  
-                  <!-- Hotel Policies & Check-in Information -->
+                  <!-- Hotel Policies -->
                   <?php if (!empty($hotel['check_in_time']) || !empty($hotel['check_out_time']) || !empty($hotel['hotel_policies'])): ?>
                   <div class="col-xl-12 col-lg-12 col-md-12 p-0">
                      <div class="card mb-4">
                         <div class="card-header">
-                           <h4 class="fs-5 mb-0">Hotel Policies & Check-in Information</h4>
+                           <h4 class="fs-5 mb-0">Hotel Policies</h4>
                         </div>
                         <div class="card-body">
                            <div class="row align-items-start">
-                              <?php if (!empty($hotel['check_in_time']) || !empty($hotel['check_out_time'])): ?>
-                              <div class="col-xl-6 col-lg-6 col-md-6">
-                                 <h6 class="fw-semibold mb-3">Check-in & Check-out</h6>
-                                 <?php if (!empty($hotel['check_in_time'])): ?>
-                                 <div class="d-flex align-items-center mb-2">
-                                    <i class="fa-solid fa-clock text-success me-3"></i>
-                                    <div>
-                                       <div class="text-dark fw-medium">Check-in Time</div>
-                                       <div class="text-muted"><?= esc($hotel['check_in_time']) ?></div>
-                                    </div>
-                                 </div>
-                                 <?php endif; ?>
-                                 <?php if (!empty($hotel['check_out_time'])): ?>
-                                 <div class="d-flex align-items-center mb-2">
-                                    <i class="fa-solid fa-clock text-danger me-3"></i>
-                                    <div>
-                                       <div class="text-dark fw-medium">Check-out Time</div>
-                                       <div class="text-muted"><?= esc($hotel['check_out_time']) ?></div>
-                                    </div>
-                                 </div>
-                                 <?php endif; ?>
-                              </div>
-                              <?php endif; ?>
-                              
                               <?php if (!empty($hotel['hotel_policies'])): ?>
-                              <div class="col-xl-6 col-lg-6 col-md-6">
-                                 <h6 class="fw-semibold mb-3">Hotel Policies</h6>
+                              <div class="col-xl-12 col-lg-12 col-md-12">
                                  <div class="text-muted lh-lg hotel-policies">
-                                    <?= nl2br(esc($hotel['hotel_policies'])) ?>
+                                    <?= $hotel['hotel_policies'] ?>
                                  </div>
                               </div>
                               <?php endif; ?>
@@ -532,7 +511,6 @@
                      </div>
                   </div>
                   <?php endif; ?>
-
                   <!-- Cancellation Policy -->
                   <?php if (!empty($hotel['cancellation_policy'])): ?>
                   <div class="col-xl-12 col-lg-12 col-md-12 p-0">
@@ -544,14 +522,13 @@
                            <div class="d-flex align-items-start">
                               <i class="fa-solid fa-info-circle text-info me-3 mt-1"></i>
                               <div class="text-muted lh-lg cancellation-policy">
-                                 <?= nl2br(esc($hotel['cancellation_policy'])) ?>
+                                 <?= $hotel['cancellation_policy'] ?>
                               </div>
                            </div>
                         </div>
                      </div>
                   </div>
                   <?php endif; ?>
-
                   <!-- Hotel Details & Specifications -->
                   <div class="col-xl-12 col-lg-12 col-md-12 p-0">
                      <div class="card mb-4">
@@ -595,7 +572,6 @@
                                  </div>
                                  <?php endif; ?>
                               </div>
-                              
                               <div class="col-xl-6 col-lg-6 col-md-6">
                                  <h6 class="fw-semibold mb-3">Additional Information</h6>
                                  <?php if (!empty($hotel['short_description'])): ?>
@@ -607,7 +583,6 @@
                                     </div>
                                  </div>
                                  <?php endif; ?>
-                                 
                                  <?php if (!empty($hotel['latitude']) && !empty($hotel['longitude'])): ?>
                                  <div class="d-flex align-items-center mb-2">
                                     <i class="fa-solid fa-map text-success me-3"></i>
@@ -615,13 +590,12 @@
                                        <div class="text-dark fw-medium">GPS Coordinates</div>
                                        <div class="text-muted">
                                           <a href="https://www.google.com/maps?q=<?= $hotel['latitude'] ?>,<?= $hotel['longitude'] ?>" target="_blank" class="text-primary">
-                                             <?= number_format($hotel['latitude'], 6) ?>, <?= number_format($hotel['longitude'], 6) ?>
+                                          <?= number_format($hotel['latitude'], 6) ?>, <?= number_format($hotel['longitude'], 6) ?>
                                           </a>
                                        </div>
                                     </div>
                                  </div>
                                  <?php endif; ?>
-                                 
                                  <div class="d-flex align-items-center mb-2">
                                     <i class="fa-solid fa-calendar text-info me-3"></i>
                                     <div>
@@ -634,7 +608,6 @@
                         </div>
                      </div>
                   </div>
-
                   <!-- FAQ -->
                   <div class="col-xl-12 col-lg-12 col-md-12 p-0">
                      <div class="row align-items-start justify-content-between gx-3">
@@ -649,82 +622,18 @@
                         <div class="col-xl-9 col-lg-8 col-md-8">
                            <div class="accordion accordion-flush" id="accordionFlushExample">
                               <?php if (!empty($faqs)): ?>
-                                 <?php foreach ($faqs as $index => $faq): ?>
-                                 <div class="accordion-item">
-                                    <h2 class="accordion-header">
-                                       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse<?= $index + 1 ?>" aria-expanded="false" aria-controls="flush-collapse<?= $index + 1 ?>">
-                                       <?= esc($faq['question']) ?>
-                                       </button>
-                                    </h2>
-                                    <div id="flush-collapse<?= $index + 1 ?>" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                                       <div class="accordion-body"><?= nl2br(esc($faq['answer'])) ?></div>
-                                    </div>
+                              <?php foreach ($faqs as $index => $faq): ?>
+                              <div class="accordion-item">
+                                 <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse<?= $index + 1 ?>" aria-expanded="false" aria-controls="flush-collapse<?= $index + 1 ?>">
+                                    <?= esc($faq['question']) ?>
+                                    </button>
+                                 </h2>
+                                 <div id="flush-collapse<?= $index + 1 ?>" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                                    <div class="accordion-body"><?= $faq['answer'] ?></div>
                                  </div>
-                                 <?php endforeach; ?>
-                              <?php else: ?>
-                                 <!-- Default FAQs if none are set -->
-                                 <div class="accordion-item">
-                                    <h2 class="accordion-header">
-                                       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                                       How to book this hotel?
-                                       </button>
-                                    </h2>
-                                    <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                                       <div class="accordion-body">You can book this hotel by clicking the "Check Availability" button above and selecting your preferred dates. You can also contact us directly for personalized assistance with your booking.</div>
-                                    </div>
-                                 </div>
-                                 <div class="accordion-item">
-                                    <h2 class="accordion-header">
-                                       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-                                       What are the check-in and check-out times?
-                                       </button>
-                                    </h2>
-                                    <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                                       <div class="accordion-body">
-                                          <?php if (!empty($hotel['check_in_time']) || !empty($hotel['check_out_time'])): ?>
-                                          Check-in time is <?= esc($hotel['check_in_time'] ?? '2:00 PM') ?> and check-out time is <?= esc($hotel['check_out_time'] ?? '12:00 PM') ?>. Early check-in and late check-out may be available upon request and subject to availability.
-                                          <?php else: ?>
-                                          Standard check-in time is 2:00 PM and check-out time is 12:00 PM. Early check-in and late check-out may be available upon request and subject to availability.
-                                          <?php endif; ?>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <div class="accordion-item">
-                                    <h2 class="accordion-header">
-                                       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
-                                       Is parking available?
-                                       </button>
-                                    </h2>
-                                    <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                                       <div class="accordion-body">Yes, parking facilities are available. Please contact the hotel directly for specific parking arrangements and any associated fees.</div>
-                                    </div>
-                                 </div>
-                                 <div class="accordion-item">
-                                    <h2 class="accordion-header">
-                                       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour">
-                                       What amenities are included?
-                                       </button>
-                                    </h2>
-                                    <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                                       <div class="accordion-body">The hotel offers various amenities including <?= !empty($hotel['amenities']) ? esc(str_replace(',', ', ', $hotel['amenities'])) : 'WiFi, air conditioning, room service, and 24-hour front desk' ?>. Please see the amenities section above for a complete list.</div>
-                                    </div>
-                                 </div>
-                                 <div class="accordion-item">
-                                    <h2 class="accordion-header">
-                                       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive">
-                                       Can I cancel my booking?
-                                       </button>
-                                    </h2>
-                                    <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                                       <div class="accordion-body cancellation-policy">
-                                          <?php if (!empty($hotel['cancellation_policy'])): ?>
-                                          <?= nl2br(esc($hotel['cancellation_policy'])) ?>
-                                          <?php else: ?>
-                                          Cancellation policies vary depending on the rate and booking conditions. Please review the specific cancellation terms during booking or contact us for more information about your reservation.
-                                          <?php endif; ?>
-                                       </div>
-                                    </div>
-                                 </div>
+                              </div>
+                              <?php endforeach; ?>
                               <?php endif; ?>
                            </div>
                         </div>
@@ -789,18 +698,18 @@
                                     <ul class="p-0 row gx-3 gy-2 align-items-start flex-wrap">
                                        <?php if (!empty($relatedHotel['amenities'])): ?>
                                        <?php
-                                                        $amenities = array_slice(explode(',', $relatedHotel['amenities']), 0, 6);
-                                                        foreach ($amenities as $amenity):
-                                                            $amenity = trim($amenity);
-                                                            if (!empty($amenity)):
-                                                                ?>
-                                                                                <li class="col-auto text-dark text-md text-muted-2 d-inline-flex align-items-center">
-                                                                                    <i class="fa-solid fa-check text-success me-1"></i><?= esc($amenity) ?>
-                                                                                </li>
-                                                                                <?php
-                                                            endif;
-                                                        endforeach;
-                                            ?>
+            $amenities = array_slice(explode(',', $relatedHotel['amenities']), 0, 6);
+            foreach ($amenities as $amenity):
+                $amenity = trim($amenity);
+                if (!empty($amenity)):
+                    ?>
+                                       <li class="col-auto text-dark text-md text-muted-2 d-inline-flex align-items-center">
+                                          <i class="fa-solid fa-check text-success me-1"></i><?= esc($amenity) ?>
+                                       </li>
+                                       <?php
+                endif;
+            endforeach;
+?>
                                        <?php else: ?>
                                        <li class="col-auto text-dark text-md text-muted-2 d-inline-flex align-items-center">
                                           <i class="fa-solid fa-check text-success me-1"></i>Free WiFi
@@ -862,7 +771,7 @@
            hiddenImages[3].click();
        }
    }
-
+   
    function shareHotel() {
        const hotelName = '<?= esc($hotel['name']) ?>';
        const hotelUrl = window.location.href;
@@ -884,7 +793,7 @@
            fallbackShare(hotelName, hotelUrl);
        }
    }
-
+   
    function fallbackShare(hotelName, hotelUrl) {
        // Create a modal with share options
        const shareModal = document.createElement('div');
@@ -933,7 +842,7 @@
            document.body.removeChild(shareModal);
        });
    }
-
+   
    function copyToClipboard(text) {
        navigator.clipboard.writeText(text).then(() => {
            // Show success message
@@ -967,144 +876,118 @@
        });
    }
 </script>
-
 <style>
-/* Rich text content styling for hotel description */
-.hotel-description h1, .hotel-description h2, .hotel-description h3, 
-.hotel-description h4, .hotel-description h5, .hotel-description h6 {
-    color: #333;
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-}
-
-.hotel-description h1 { font-size: 1.8rem; }
-.hotel-description h2 { font-size: 1.6rem; }
-.hotel-description h3 { font-size: 1.4rem; }
-.hotel-description h4 { font-size: 1.2rem; }
-.hotel-description h5 { font-size: 1.1rem; }
-.hotel-description h6 { font-size: 1rem; }
-
-.hotel-description p {
-    margin-bottom: 1rem;
-    line-height: 1.6;
-}
-
-.hotel-description ul, .hotel-description ol {
-    margin-bottom: 1rem;
-    padding-left: 1.5rem;
-}
-
-.hotel-description li {
-    margin-bottom: 0.25rem;
-}
-
-.hotel-description strong {
-    font-weight: 600;
-    color: #333;
-}
-
-.hotel-description em {
-    font-style: italic;
-}
-
-.hotel-description a {
-    color: #007bff;
-    text-decoration: none;
-}
-
-.hotel-description a:hover {
-    text-decoration: underline;
-}
-
-.hotel-description blockquote {
-    border-left: 4px solid #007bff;
-    padding-left: 1rem;
-    margin: 1rem 0;
-    font-style: italic;
-    background-color: #f8f9fa;
-    padding: 1rem;
-    border-radius: 0.25rem;
-}
-
-.hotel-description img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 0.25rem;
-    margin: 1rem 0;
-}
-
-/* Styling for hotel policies and other rich content sections */
-.hotel-policies h1, .hotel-policies h2, .hotel-policies h3, 
-.hotel-policies h4, .hotel-policies h5, .hotel-policies h6 {
-    color: #333;
-    margin-top: 0.8rem;
-    margin-bottom: 0.4rem;
-    font-weight: 600;
-}
-
-.hotel-policies h4 { font-size: 1.1rem; }
-.hotel-policies h5 { font-size: 1rem; }
-.hotel-policies h6 { font-size: 0.9rem; }
-
-.hotel-policies p {
-    margin-bottom: 0.8rem;
-    line-height: 1.5;
-}
-
-.hotel-policies ul, .hotel-policies ol {
-    margin-bottom: 0.8rem;
-    padding-left: 1.2rem;
-}
-
-.hotel-policies li {
-    margin-bottom: 0.2rem;
-}
-
-.hotel-policies strong {
-    font-weight: 600;
-    color: #333;
-}
-
-.hotel-policies em {
-    font-style: italic;
-}
-
-/* Styling for cancellation policy content */
-.cancellation-policy h1, .cancellation-policy h2, .cancellation-policy h3, 
-.cancellation-policy h4, .cancellation-policy h5, .cancellation-policy h6 {
-    color: #333;
-    margin-top: 0.8rem;
-    margin-bottom: 0.4rem;
-    font-weight: 600;
-}
-
-.cancellation-policy h4 { font-size: 1.1rem; }
-.cancellation-policy h5 { font-size: 1rem; }
-.cancellation-policy h6 { font-size: 0.9rem; }
-
-.cancellation-policy p {
-    margin-bottom: 0.8rem;
-    line-height: 1.5;
-}
-
-.cancellation-policy ul, .cancellation-policy ol {
-    margin-bottom: 0.8rem;
-    padding-left: 1.2rem;
-}
-
-.cancellation-policy li {
-    margin-bottom: 0.2rem;
-}
-
-.cancellation-policy strong {
-    font-weight: 600;
-    color: #333;
-}
-
-.cancellation-policy em {
-    font-style: italic;
-}
+   /* Rich text content styling for hotel description */
+   .hotel-description h1, .hotel-description h2, .hotel-description h3, 
+   .hotel-description h4, .hotel-description h5, .hotel-description h6 {
+   color: #333;
+   margin-top: 1rem;
+   margin-bottom: 0.5rem;
+   font-weight: 600;
+   }
+   .hotel-description h1 { font-size: 1.8rem; }
+   .hotel-description h2 { font-size: 1.6rem; }
+   .hotel-description h3 { font-size: 1.4rem; }
+   .hotel-description h4 { font-size: 1.2rem; }
+   .hotel-description h5 { font-size: 1.1rem; }
+   .hotel-description h6 { font-size: 1rem; }
+   .hotel-description p {
+   margin-bottom: 1rem;
+   line-height: 1.6;
+   }
+   .hotel-description ul, .hotel-description ol {
+   margin-bottom: 1rem;
+   padding-left: 1.5rem;
+   }
+   .hotel-description li {
+   margin-bottom: 0.25rem;
+   }
+   .hotel-description strong {
+   font-weight: 600;
+   color: #333;
+   }
+   .hotel-description em {
+   font-style: italic;
+   }
+   .hotel-description a {
+   color: #007bff;
+   text-decoration: none;
+   }
+   .hotel-description a:hover {
+   text-decoration: underline;
+   }
+   .hotel-description blockquote {
+   border-left: 4px solid #007bff;
+   padding-left: 1rem;
+   margin: 1rem 0;
+   font-style: italic;
+   background-color: #f8f9fa;
+   padding: 1rem;
+   border-radius: 0.25rem;
+   }
+   .hotel-description img {
+   max-width: 100%;
+   height: auto;
+   border-radius: 0.25rem;
+   margin: 1rem 0;
+   }
+   /* Styling for hotel policies and other rich content sections */
+   .hotel-policies h1, .hotel-policies h2, .hotel-policies h3, 
+   .hotel-policies h4, .hotel-policies h5, .hotel-policies h6 {
+   color: #333;
+   margin-top: 0.8rem;
+   margin-bottom: 0.4rem;
+   font-weight: 600;
+   }
+   .hotel-policies h4 { font-size: 1.1rem; }
+   .hotel-policies h5 { font-size: 1rem; }
+   .hotel-policies h6 { font-size: 0.9rem; }
+   .hotel-policies p {
+   margin-bottom: 0.8rem;
+   line-height: 1.5;
+   }
+   .hotel-policies ul, .hotel-policies ol {
+   margin-bottom: 0.8rem;
+   padding-left: 1.2rem;
+   }
+   .hotel-policies li {
+   margin-bottom: 0.2rem;
+   }
+   .hotel-policies strong {
+   font-weight: 600;
+   color: #333;
+   }
+   .hotel-policies em {
+   font-style: italic;
+   }
+   /* Styling for cancellation policy content */
+   .cancellation-policy h1, .cancellation-policy h2, .cancellation-policy h3, 
+   .cancellation-policy h4, .cancellation-policy h5, .cancellation-policy h6 {
+   color: #333;
+   margin-top: 0.8rem;
+   margin-bottom: 0.4rem;
+   font-weight: 600;
+   }
+   .cancellation-policy h4 { font-size: 1.1rem; }
+   .cancellation-policy h5 { font-size: 1rem; }
+   .cancellation-policy h6 { font-size: 0.9rem; }
+   .cancellation-policy p {
+   margin-bottom: 0.8rem;
+   line-height: 1.5;
+   }
+   .cancellation-policy ul, .cancellation-policy ol {
+   margin-bottom: 0.8rem;
+   padding-left: 1.2rem;
+   }
+   .cancellation-policy li {
+   margin-bottom: 0.2rem;
+   }
+   .cancellation-policy strong {
+   font-weight: 600;
+   color: #333;
+   }
+   .cancellation-policy em {
+   font-style: italic;
+   }
 </style>
-
 <?php include APPPATH . 'Views/layouts/public_footer.php'; ?>

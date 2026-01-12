@@ -196,6 +196,18 @@
                               </a>
                               <div class="collapse" id="sidebarContentManagement">
                                    <ul class="sub-menu-nav">
+                                          <li class="sub-menu-item">
+                                             <a class="sub-menu-link" href="<?= base_url('/admin/about-sections') ?>">About Page</a>
+                                        </li>
+                                        <li class="sub-menu-item">
+                                             <a class="sub-menu-link" href="<?= base_url('/admin/contact-sections') ?>">Contact Page</a>
+                                        </li>
+
+                                         <li class="sub-menu-item">
+                                             <a class="sub-menu-link" href="<?= base_url('/admin/tourism-alliances') ?>">Tourism Alliances</a>
+                                        </li>
+                                       
+
                                         <li class="sub-menu-item">
                                              <a class="sub-menu-link" href="<?= base_url('/admin/blogs') ?>">Blogs</a>
                                         </li>
@@ -205,9 +217,11 @@
                                         <li class="sub-menu-item">
                                              <a class="sub-menu-link" href="<?= base_url('/admin/testimonial-categories') ?>">Testimonial Categories</a>
                                         </li>
-                                        <li class="sub-menu-item">
-                                             <a class="sub-menu-link" href="<?= base_url('/admin/tourism-alliances') ?>">Tourism Alliances</a>
+
+                                         <li class="sub-menu-item">
+                                             <a class="sub-menu-link" href="<?= base_url('/admin/contacts') ?>">Contact Messages</a>
                                         </li>
+                                       
                                    </ul>
                               </div>
                          </li>

@@ -84,11 +84,11 @@
                      </a>
                   </li>
                   <li class="mfh-mobile-btn">
-                     <a href="<?= base_url('/quote') ?>" class="mfh-btn">Request A Quote</a>
+                     <a href="<?= base_url('/contact') ?>" class="mfh-btn">Request A Quote</a>
                   </li>
                </ul>
             </nav>
-            <a href="<?= base_url('/quote') ?>" class="mfh-btn mfh-desktop-btn">Request A Quote</a>
+            <a href="<?= base_url('/contact') ?>" class="mfh-btn mfh-desktop-btn">Request A Quote</a>
          </div>
       </header>
       <div class="clearfix"></div>

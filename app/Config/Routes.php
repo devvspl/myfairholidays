@@ -274,6 +274,34 @@ $routes->group('admin', ['filter' => 'role:admin'], function($routes) {
     $routes->post('tourism-alliances/bulk-action', 'Admin\TourismAllianceController::bulkAction');
     $routes->post('tourism-alliances/update-sort-order', 'Admin\TourismAllianceController::updateSortOrder');
     
+    // Contact Management
+    $routes->get('contacts', 'Admin\ContactController::index');
+    $routes->get('contacts/show/(:num)', 'Admin\ContactController::show/$1');
+    $routes->post('contacts/update-status/(:num)', 'Admin\ContactController::updateStatus/$1');
+    $routes->get('contacts/delete/(:num)', 'Admin\ContactController::delete/$1');
+    $routes->post('contacts/bulk-action', 'Admin\ContactController::bulkAction');
+    $routes->get('contacts/export', 'Admin\ContactController::export');
+    
+    // About Sections Management
+    $routes->get('about-sections', 'Admin\AboutSectionController::index');
+    $routes->get('about-sections/create', 'Admin\AboutSectionController::create');
+    $routes->post('about-sections/store', 'Admin\AboutSectionController::store');
+    $routes->get('about-sections/edit/(:num)', 'Admin\AboutSectionController::edit/$1');
+    $routes->post('about-sections/update/(:num)', 'Admin\AboutSectionController::update/$1');
+    $routes->get('about-sections/delete/(:num)', 'Admin\AboutSectionController::delete/$1');
+    $routes->post('about-sections/toggle-status/(:num)', 'Admin\AboutSectionController::toggleStatus/$1');
+    $routes->post('about-sections/update-sort-order', 'Admin\AboutSectionController::updateSortOrder');
+    
+    // Contact Sections Management
+    $routes->get('contact-sections', 'Admin\ContactSectionController::index');
+    $routes->get('contact-sections/create', 'Admin\ContactSectionController::create');
+    $routes->post('contact-sections/store', 'Admin\ContactSectionController::store');
+    $routes->get('contact-sections/edit/(:num)', 'Admin\ContactSectionController::edit/$1');
+    $routes->post('contact-sections/update/(:num)', 'Admin\ContactSectionController::update/$1');
+    $routes->get('contact-sections/delete/(:num)', 'Admin\ContactSectionController::delete/$1');
+    $routes->post('contact-sections/toggle-status/(:num)', 'Admin\ContactSectionController::toggleStatus/$1');
+    $routes->post('contact-sections/update-sort-order', 'Admin\ContactSectionController::updateSortOrder');
+    
     // Page Management
     $routes->get('pages', 'Admin\PagesController::index');
     $routes->get('pages/create', 'Admin\PagesController::create');

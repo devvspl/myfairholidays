@@ -23,6 +23,9 @@ class PublicController extends BaseController
     protected $imageGalleryModel;
     protected $pageModel;
     protected $tourismAllianceModel;
+    protected $contactModel;
+    protected $aboutSectionModel;
+    protected $contactSectionModel;
 
     public function __construct()
     {
@@ -35,6 +38,9 @@ class PublicController extends BaseController
         $this->imageGalleryModel = new ImageGalleryModel();
         $this->pageModel = new PageModel();
         $this->tourismAllianceModel = new TourismAllianceModel();
+        $this->contactModel = new \App\Models\ContactModel();
+        $this->aboutSectionModel = new \App\Models\AboutSectionModel();
+        $this->contactSectionModel = new \App\Models\ContactSectionModel();
     }
 
     /**
@@ -157,10 +163,18 @@ class PublicController extends BaseController
 
     public function about()
     {
+        // Get all about sections grouped by type
+        $sections = $this->aboutSectionModel->getAllSectionsGrouped();
+
         $data = array_merge($this->commonData, [
-            'title' => 'About Us',
-            'meta_description' => 'Get in touch with My Fair Holidays travel experts in Noida. We are here to help you plan your perfect domestic and international trips.',
-            'meta_keywords' => 'about, travel support, customer service, travel consultation, noida travel agency'
+            'title' => 'About Us - My Fair Holidays',
+            'meta_description' => 'Learn about My Fair Holidays - Leading travel agency in Noida offering best domestic and international tour packages with 25+ years of experience.',
+            'meta_keywords' => 'about us, travel agency, my fair holidays, travel company, tour operator, travel services',
+            'heroSection' => $this->aboutSectionModel->getHeroSection(),
+            'missionSection' => $this->aboutSectionModel->getMissionSection(),
+            'statsSection' => $this->aboutSectionModel->getStatsSection(),
+            'featuresSection' => $this->aboutSectionModel->getFeaturesSection(),
+            'sections' => $sections
         ]);
 
         return view('public/about', $data);
@@ -171,10 +185,17 @@ class PublicController extends BaseController
      */
     public function contact()
     {
+        // Get all contact sections grouped by type
+        $sections = $this->contactSectionModel->getAllSectionsGrouped();
+
         $data = array_merge($this->commonData, [
             'title' => 'Contact Us',
             'meta_description' => 'Get in touch with My Fair Holidays travel experts in Noida. We are here to help you plan your perfect domestic and international trips.',
-            'meta_keywords' => 'contact, travel support, customer service, travel consultation, noida travel agency'
+            'meta_keywords' => 'contact, travel support, customer service, travel consultation, noida travel agency',
+            'heroSection' => $this->contactSectionModel->getHeroSection(),
+            'contactInfoSections' => $this->contactSectionModel->getContactInfoSections(),
+            'formSettingsSection' => $this->contactSectionModel->getFormSettingsSection(),
+            'sections' => $sections
         ]);
 
         return view('public/contact', $data);
@@ -189,15 +210,9 @@ class PublicController extends BaseController
             return redirect()->to('/contact');
         }
 
+        // Validate the form data with public validation rules
         $validation = \Config\Services::validation();
-
-        $validation->setRules([
-            'name' => 'required|min_length[2]|max_length[100]',
-            'email' => 'required|valid_email',
-            'phone' => 'max_length[20]',
-            'subject' => 'required|min_length[5]|max_length[200]',
-            'message' => 'required|min_length[10]|max_length[1000]'
-        ]);
+        $validation->setRules($this->contactModel->getPublicValidationRules(), $this->contactModel->getPublicValidationMessages());
 
         if (!$validation->withRequest($this->request)->run()) {
             return $this->response->setJSON([
@@ -207,25 +222,45 @@ class PublicController extends BaseController
             ]);
         }
 
-        // Here you would typically save to database and/or send email
-        // For now, we'll just return success
+        try {
+            // Prepare contact data
+            $contactData = [
+                'name' => $this->request->getPost('name'),
+                'email' => $this->request->getPost('email'),
+                'phone' => $this->request->getPost('phone'),
+                'subject' => $this->request->getPost('subject'),
+                'message' => $this->request->getPost('message'),
+                'ip_address' => $this->request->getIPAddress(),
+                'user_agent' => $this->request->getUserAgent()->getAgentString(),
+                'status' => 'new'
+            ];
 
-        $contactData = [
-            'name' => $this->request->getPost('name'),
-            'email' => $this->request->getPost('email'),
-            'phone' => $this->request->getPost('phone'),
-            'subject' => $this->request->getPost('subject'),
-            'message' => $this->request->getPost('message'),
-            'created_at' => date('Y-m-d H:i:s')
-        ];
+            // Save to database (skip validation since we already validated)
+            $contactId = $this->contactModel->insert($contactData, false);
 
-        // Log the contact submission (you can save to database here)
-        log_message('info', 'Contact form submission: ' . json_encode($contactData));
+            if ($contactId) {
+                // Log the contact submission
+                log_message('info', 'Contact form submission saved with ID: ' . $contactId);
 
-        return $this->response->setJSON([
-            'success' => true,
-            'message' => 'Thank you for your message! We will get back to you soon.'
-        ]);
+                // Here you can add email notification logic
+                // $this->sendContactNotification($contactData, $contactId);
+
+                return $this->response->setJSON([
+                    'success' => true,
+                    'message' => 'Thank you for your message! We will get back to you within 24 hours.'
+                ]);
+            } else {
+                throw new \Exception('Failed to save contact form data');
+            }
+
+        } catch (\Exception $e) {
+            log_message('error', 'Contact form submission error: ' . $e->getMessage());
+            
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Sorry, there was an error processing your request. Please try again or contact us directly.'
+            ]);
+        }
     }
 
     /**

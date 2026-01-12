@@ -74,7 +74,18 @@ class Filters extends BaseFilters
      */
     public array $globals = [
         'before' => [
-            'csrf' => ['except' => ['auth/*', 'admin/hotels/delete-image/*', 'admin/hotels/set-featured-image/*', 'admin/hotels/toggle-status/*', 'admin/hotels/toggle-featured/*', 'admin/hotels/faqs/*/delete/*']],
+            'csrf' => ['except' => [
+                'auth/*', 
+                'admin/hotels/delete-image/*', 
+                'admin/hotels/set-featured-image/*', 
+                'admin/hotels/toggle-status/*', 
+                'admin/hotels/toggle-featured/*', 
+                'admin/hotels/faqs/*/delete/*',
+                'admin/contacts/update-status/*',
+                'admin/contacts/bulk-action',
+                'admin/about-sections/toggle-status/*',
+                'admin/about-sections/update-sort-order'
+            ]],
             // 'honeypot',
             // 'invalidchars',
         ],

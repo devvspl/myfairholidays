@@ -187,28 +187,6 @@
                         </div>
                      </div>
 
-                     <!-- Location Filters -->
-                     <div class="searchBar-single px-3 py-3 border-bottom">
-                        <div class="searchBar-single-title d-flex mb-3">
-                           <h6 class="sidebar-subTitle fs-6 fw-medium m-0">Location</h6>
-                        </div>
-                        <div class="searchBar-single-wrap">
-                           <ul class="row align-items-center justify-content-between p-0 gx-3 gy-2 mb-0">
-                              <li class="col-12">
-                                 <div class="form-check">
-                                    <input class="form-check-input location-filter" type="checkbox" name="has_coordinates" id="has_map" value="1" <?= ($currentFilters['has_coordinates'] ?? '') == '1' ? 'checked' : '' ?>>
-                                    <label class="form-check-label" for="has_map">Show on Map Available</label>
-                                 </div>
-                              </li>
-                              <li class="col-12">
-                                 <div class="form-group mb-0">
-                                    <input type="text" class="form-control form-control-sm" name="location_search" placeholder="Search by address..." value="<?= esc($currentFilters['location_search'] ?? '') ?>">
-                                 </div>
-                              </li>
-                           </ul>
-                        </div>
-                     </div>
-
                      <!-- Hotel Type & Features -->
                      <div class="searchBar-single px-3 py-3 border-bottom">
                         <div class="searchBar-single-title d-flex mb-3">

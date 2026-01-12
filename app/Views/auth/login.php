@@ -110,32 +110,15 @@
                                                        </button>
                                                   </div>
                                              </form>
-                                             
-                                             <p class="mt-3 fw-semibold no-span">Or Sign In with</p>
-
-                                             <div class="d-flex align-items-center justify-content-center gap-3 text-center">
-                                                  <a href="javascript:void(0);" class="btn btn-outline-danger shadow px-2 d-flex align-items-center justify-content-center gap-1 fw-medium">
-                                                       <iconify-icon icon="flat-color-icons:google" class="fs-20"></iconify-icon>
-                                                       Google
-                                                  </a>
-                                                  <a href="javascript:void(0);" class="btn btn-outline-primary shadow px-2 d-flex align-items-center justify-content-center gap-1 fw-medium">
-                                                       <iconify-icon icon="logos:facebook" class="fs-20"></iconify-icon>
-                                                       Facebook
-                                                  </a>
-                                                  <a href="javascript:void(0);" class="btn btn-outline-dark shadow px-2 d-flex align-items-center justify-content-center gap-1 fw-medium">
-                                                       <iconify-icon icon="mdi:github" class="fs-20"></iconify-icon>
-                                                       Github
-                                                  </a>
-                                             </div>
                                         </div>
 
                                         <p class="text-muted text-center mt-4 mb-0">Don't have an account? <a href="<?= base_url('/auth/register') ?>" class="link-primary fst-italic text-decoration-underline fw-semibold">Sign up</a></p>
                                         
                                         <div class="text-center mt-3" style="font-size: 12px; color: #999;">
                                              <p><strong>Demo Accounts:</strong></p>
-                                             <p>Admin: admin@example.com / admin123</p>
-                                             <p>Manager: manager@example.com / manager123</p>
-                                             <p>User: user@example.com / user123</p>
+                                             <p>Admin: admin@myfairholidays.com / admin123</p>
+                                             <p>Manager: manager@myfairholidays.com / manager123</p>
+                                             <p>User: user@myfairholidays.com / user123</p>
                                         </div>
                                    </div>
                               </div>

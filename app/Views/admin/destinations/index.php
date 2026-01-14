@@ -159,7 +159,7 @@
                   </div>
                   <div class="table-responsive">
                      <table class="table table-striped table-hover">
-                        <thead>
+                        <thead class="table-light">
                            <tr>
                               <th width="30">
                                  <input type="checkbox" class="form-check-input" id="selectAll">

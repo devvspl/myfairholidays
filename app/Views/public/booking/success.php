@@ -1,247 +1,246 @@
 <?php include APPPATH . 'Views/layouts/public_header.php'; ?>
 
 <!-- ============================ Booking Success Page ================================== -->
-<section class="pt-4 gray-simple position-relative">
+<section class="py-5 gray-simple position-relative">
     <div class="container">
-        <!-- Success Header -->
-        <div class="row justify-content-center mb-5">
-            <div class="col-lg-8 text-center">
-                <div class="success-icon mb-4">
-                    <i class="fas fa-check-circle fa-5x text-success"></i>
-                </div>
-                <h1 class="display-4 mb-3 text-success">Booking Confirmed!</h1>
-                <p class="lead">Thank you for choosing My Fair Holidays. Your booking has been successfully confirmed.</p>
-                <div class="order-id mt-4">
-                    <h4>Booking Reference: <span class="text-warning"><?= $bookingComplete['booking_reference'] ?? $bookingComplete['order_id'] ?></span></h4>
-                </div>
-            </div>
-        </div>
 
-        <div class="row">
-            <!-- Hotel Information -->
-            <div class="col-lg-8">
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0"><i class="fas fa-hotel me-2"></i>Hotel Details</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <?php if (!empty($bookingComplete['hotel']['featured_image'])): ?>
-                                    <img src="<?= base_url('uploads/hotels/' . $bookingComplete['hotel']['featured_image']) ?>" 
-                                         alt="<?= esc($bookingComplete['hotel']['name']) ?>" 
-                                         class="img-fluid rounded">
-                                <?php else: ?>
-                                    <div class="placeholder-image bg-light rounded d-flex align-items-center justify-content-center" style="height: 200px;">
-                                        <i class="fas fa-hotel fa-3x text-muted"></i>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-                            <div class="col-md-8">
-                                <h4><?= esc($bookingComplete['hotel']['name']) ?></h4>
-                                <p class="text-muted mb-2">
-                                    <i class="fas fa-map-marker-alt me-1"></i>
-                                    <?= esc($bookingComplete['hotel']['location']) ?>
-                                </p>
-                                <div class="rating mb-2">
-                                    <?php for ($i = 1; $i <= 5; $i++): ?>
-                                        <i class="fas fa-star <?= $i <= $bookingComplete['hotel']['rating'] ? 'text-warning' : 'text-muted' ?>"></i>
-                                    <?php endfor; ?>
-                                    <span class="ms-2"><?= $bookingComplete['hotel']['rating'] ?>/5</span>
-                                </div>
-                                <p><?= esc($bookingComplete['hotel']['short_description']) ?></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <div class="row align-items-start">
+            <div class="col-xl-12 col-lg-12 col-md-12">
+                <div class="card mb-3">
+                    <div class="car-body px-xl-5 px-lg-4 py-lg-5 py-4 px-2">
 
-                <!-- Booking Information -->
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-info text-white">
-                        <h5 class="mb-0"><i class="fas fa-calendar-alt me-2"></i>Booking Information</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="booking-info-item mb-3">
-                                    <strong>Check-in Date:</strong><br>
-                                    <span class="text-primary"><?= date('F j, Y', strtotime($bookingComplete['booking_data']['check_in_date'])) ?></span>
-                                </div>
-                                <div class="booking-info-item mb-3">
-                                    <strong>Check-out Date:</strong><br>
-                                    <span class="text-primary"><?= date('F j, Y', strtotime($bookingComplete['booking_data']['check_out_date'])) ?></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="booking-info-item mb-3">
-                                    <strong>Guests:</strong><br>
-                                    <?= $bookingComplete['booking_data']['adults'] ?> Adults
-                                    <?php if ($bookingComplete['booking_data']['children'] > 0): ?>
-                                        , <?= $bookingComplete['booking_data']['children'] ?> Children
-                                    <?php endif; ?>
-                                    <?php if ($bookingComplete['booking_data']['infants'] > 0): ?>
-                                        , <?= $bookingComplete['booking_data']['infants'] ?> Infants
-                                    <?php endif; ?>
-                                </div>
-                                <div class="booking-info-item mb-3">
-                                    <strong>Rooms:</strong><br>
-                                    <?= $bookingComplete['booking_data']['rooms'] ?> Room(s)
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Guest Information -->
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-secondary text-white">
-                        <h5 class="mb-0"><i class="fas fa-users me-2"></i>Guest Information</h5>
-                    </div>
-                    <div class="card-body">
-                        <?php if (!empty($bookingComplete['guest_data'])): ?>
-                            <div class="row">
-                                <?php foreach ($bookingComplete['guest_data'] as $index => $guest): ?>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="guest-card border rounded p-3">
-                                            <h6 class="text-primary">Guest <?= $index + 1 ?></h6>
-                                            <p class="mb-1"><strong>Name:</strong> <?= esc($guest['first_name'] . ' ' . $guest['last_name']) ?></p>
-                                            <p class="mb-1"><strong>Date of Birth:</strong> <?= date('F j, Y', strtotime($guest['date_of_birth'])) ?></p>
-                                            <?php if (!empty($guest['passport_number'])): ?>
-                                                <p class="mb-0"><strong>Passport:</strong> <?= esc($guest['passport_number']) ?></p>
-                                            <?php endif; ?>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Booking Summary -->
-            <div class="col-lg-4">
-                <div class="card shadow-sm sticky-top" style="top: 20px;">
-                    <div class="card-header bg-success text-white">
-                        <h5 class="mb-0"><i class="fas fa-receipt me-2"></i>Booking Summary</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="summary-item d-flex justify-content-between mb-2">
-                            <span>Base Price:</span>
-                            <span>₹<?= number_format($bookingComplete['payment_data']['amount'] / 1.08 + ($bookingComplete['hotel']['is_featured'] ? $bookingComplete['payment_data']['amount'] * 0.15 / 1.08 : 0), 2) ?></span>
-                        </div>
-                        <?php if ($bookingComplete['hotel']['is_featured']): ?>
-                            <div class="summary-item d-flex justify-content-between mb-2 text-success">
-                                <span>Discount (15%):</span>
-                                <span>-₹<?= number_format($bookingComplete['payment_data']['amount'] * 0.15 / 1.08, 2) ?></span>
-                            </div>
-                        <?php endif; ?>
-                        <div class="summary-item d-flex justify-content-between mb-2">
-                            <span>Taxes (8%):</span>
-                            <span>₹<?= number_format($bookingComplete['payment_data']['amount'] * 0.08 / 1.08, 2) ?></span>
-                        </div>
-                        <hr>
-                        <div class="summary-total d-flex justify-content-between mb-3">
-                            <strong>Total Amount:</strong>
-                            <strong class="text-success">₹<?= number_format($bookingComplete['payment_data']['amount'], 2) ?></strong>
+                        <div class="d-flex align-items-center justify-content-center mb-3">
+                            <div class="square--80 circle text-light bg-success"><i class="fa-solid fa-check-double fs-1"></i></div>
                         </div>
                         
-                        <div class="payment-info">
-                            <h6 class="text-primary">Payment Information</h6>
-                            <p class="mb-1"><strong>Payment Method:</strong> <?= ucfirst(str_replace('_', ' ', $bookingComplete['payment_data']['payment_method'])) ?></p>
-                            <p class="mb-1"><strong>Status:</strong> <span class="badge bg-warning">Pending</span></p>
-                            <p class="mb-0"><strong>Currency:</strong> <?= $bookingComplete['payment_data']['currency'] ?></p>
+                        <div class="d-flex align-items-center justify-content-center flex-column text-center mb-5">
+                            <h3 class="mb-0">Your order was confirmed successfully!</h3>
+                            <p class="text-md mb-0">Booking detail sent to: <span class="text-primary"><?= esc($bookingComplete['payment_data']['customer_email']) ?></span></p>
+                        </div>
+                        
+                        <div class="d-flex align-items-center justify-content-center flex-column mb-4">
+                            <div class="border br-dashed full-width rounded-2 p-3 pt-0">
+                                <ul class="row align-items-center justify-content-start g-3 m-0 p-0">
+                                    <li class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+                                        <div class="d-block">
+                                            <p class="text-dark fw-medium lh-2 mb-0">Booking Reference</p>
+                                            <p class="text-muted mb-0 lh-2"><?= esc($bookingComplete['booking_reference']) ?></p>
+                                        </div>
+                                    </li>
+                                    <li class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+                                        <div class="d-block">
+                                            <p class="text-dark fw-medium lh-2 mb-0">Check-in Date</p>
+                                            <p class="text-muted mb-0 lh-2"><?= date('d M Y', strtotime($bookingComplete['booking_data']['check_in_date'])) ?></p>
+                                        </div>
+                                    </li>
+                                    <li class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+                                        <div class="d-block">
+                                            <p class="text-dark fw-medium lh-2 mb-0">Total Amount</p>
+                                            <p class="text-muted mb-0 lh-2">₹<?= number_format($bookingComplete['pricing']['total_amount'], 2) ?></p>
+                                        </div>
+                                    </li>
+                                    <li class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+                                        <div class="d-block">
+                                            <p class="text-dark fw-medium lh-2 mb-0">Payment Mode</p>
+                                            <p class="text-muted mb-0 lh-2"><?= ucfirst(str_replace('_', ' ', $bookingComplete['payment_data']['payment_method'])) ?></p>
+                                        </div>
+                                    </li>
+                                    <li class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+                                        <div class="d-block">
+                                            <p class="text-dark fw-medium lh-2 mb-0">Customer Name</p>
+                                            <p class="text-muted mb-0 lh-2"><?= esc($bookingComplete['billing_data']['name']) ?></p>
+                                        </div>
+                                    </li>
+                                    <li class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+                                        <div class="d-block">
+                                            <p class="text-dark fw-medium lh-2 mb-0">Phone</p>
+                                            <p class="text-muted mb-0 lh-2"><?= esc($bookingComplete['billing_data']['phone']) ?></p>
+                                        </div>
+                                    </li>
+                                    <li class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+                                        <div class="d-block">
+                                            <p class="text-dark fw-medium lh-2 mb-0">Email</p>
+                                            <p class="text-muted mb-0 lh-2"><?= esc($bookingComplete['billing_data']['email']) ?></p>
+                                        </div>
+                                    </li>
+                                    <li class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+                                        <div class="d-block">
+                                            <p class="text-dark fw-medium lh-2 mb-0">Hotel Name</p>
+                                            <p class="text-muted mb-0 lh-2"><?= esc($bookingComplete['hotel']['name']) ?></p>
+                                        </div>
+                                    </li>
+                                    <li class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+                                        <div class="d-block">
+                                            <p class="text-dark fw-medium lh-2 mb-0">Nights</p>
+                                            <p class="text-muted mb-0 lh-2"><?= $bookingComplete['booking_data']['nights'] ?> Night<?= $bookingComplete['booking_data']['nights'] > 1 ? 's' : '' ?></p>
+                                        </div>
+                                    </li>
+                                    <li class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+                                        <div class="d-block">
+                                            <p class="text-dark fw-medium lh-2 mb-0">Rooms</p>
+                                            <p class="text-muted mb-0 lh-2"><?= $bookingComplete['booking_data']['rooms'] ?> Room<?= $bookingComplete['booking_data']['rooms'] > 1 ? 's' : '' ?></p>
+                                        </div>
+                                    </li>
+                                    <li class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+                                        <div class="d-block">
+                                            <p class="text-dark fw-medium lh-2 mb-0">Guests</p>
+                                            <p class="text-muted mb-0 lh-2"><?= $bookingComplete['booking_data']['adults'] ?> Adult<?= $bookingComplete['booking_data']['adults'] > 1 ? 's' : '' ?><?= $bookingComplete['booking_data']['children'] > 0 ? ', ' . $bookingComplete['booking_data']['children'] . ' Child' : '' ?></p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="text-center d-flex align-items-center justify-content-center">
+                            <a href="<?= base_url('/hotels') ?>" class="btn btn-md btn-light-seegreen fw-semibold mx-2">Book Next Tour</a>
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#invoice" class="btn btn-md btn-light-primary fw-semibold mx-2">View Invoice</a>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+<!-- ============================ Booking Success Page End ================================== -->
+
+<!-- Print Invoice Modal -->
+<div class="modal modal-lg fade" id="invoice" tabindex="-1" role="dialog" aria-labelledby="invoicemodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered invoice-pop-form" role="document">
+        <div class="modal-content" id="invoicemodal">
+            <div class="modal-header">
+                <h4 class="modal-title fs-6">Download your invoice</h4>
+                <a href="#" class="text-muted fs-4" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-square-xmark"></i></a>
+            </div>
+            <div class="modal-body">
+                <div class="invoiceblock-wrap p-3">
+                    <!-- Header -->
+                    <div class="invoice-header d-flex align-items-center justify-content-between mb-4">
+                        <div class="inv-fliop01 d-flex align-items-center justify-content-start">
+                            <div class="inv-fliop01">
+                                <div class="square--60 circle bg-light-primary text-primary"><i class="fa-solid fa-file-invoice fs-2"></i></div>
+                            </div>
+                            <div class="inv-fliop01 ps-3">
+                                <span class="text-uppercase d-block fw-semibold text-md text-dark lh-2 mb-0">Invoice <?= esc($bookingComplete['booking_reference']) ?></span>
+                                <span class="text-sm text-muted lh-2"><i class="fa-regular fa-calendar me-1"></i>Issued Date <?= date('d M Y') ?></span>
+                            </div>
+                        </div>
+                        <div class="inv-fliop02">
+                            <span class="label text-<?= $bookingComplete['payment_data']['status'] === 'paid' ? 'success bg-light-success' : 'warning bg-light-warning' ?>">
+                                <?= ucfirst($bookingComplete['payment_data']['status']) ?>
+                            </span>
                         </div>
                     </div>
-                </div>
 
-                <!-- Contact Information -->
-                <div class="card shadow-sm mt-4">
-                    <div class="card-header bg-warning text-dark">
-                        <h6 class="mb-0"><i class="fas fa-phone me-2"></i>Need Help?</h6>
+                    <!-- Invoice Body -->
+                    <div class="invoice-body">
+
+                        <!-- Invoice Top Body -->
+                        <div class="invoice-bodytop">
+                            <div class="row align-items-start justify-content-between">
+                                <div class="col-xl-6 col-lg-6 col-md-6">
+                                    <div class="invoice-desc mb-2">
+                                        <h6>From</h6>
+                                        <p class="text-md lh-2 mb-0">
+                                            <?= esc($bookingComplete['hotel']['name']) ?><br>
+                                            <?= esc($bookingComplete['hotel']['address']) ?><br>
+                                            <?= $bookingComplete['hotel']['star_rating'] ?> Star Hotel
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-xl-5 col-lg-5 col-md-6">
+                                    <div class="invoice-desc mb-2">
+                                        <h6>To</h6>
+                                        <p class="text-md lh-2 mb-0">
+                                            <?= esc($bookingComplete['billing_data']['name']) ?><br>
+                                            <?= esc($bookingComplete['billing_data']['email']) ?><br>
+                                            <?= esc($bookingComplete['billing_data']['phone']) ?>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Invoice Mid Body -->
+                        <div class="invoice-bodymid py-2">
+                            <ul class="gray rounded-3 p-3 m-0">
+                                <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 py-1">
+                                    <span class="fw-medium text-sm text-muted-2 mb-0">Booking Reference:</span>
+                                    <span class="fw-semibold text-muted-2 text-md"><?= esc($bookingComplete['booking_reference']) ?></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 py-1">
+                                    <span class="fw-medium text-sm text-muted-2 mb-0">Payment Reference:</span>
+                                    <span class="fw-semibold text-muted-2 text-md"><?= esc($bookingComplete['payment_data']['payment_reference']) ?></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 py-1">
+                                    <span class="fw-medium text-sm text-muted-2 mb-0">Check-in Date:</span>
+                                    <span class="fw-semibold text-muted-2 text-md"><?= date('d M Y', strtotime($bookingComplete['booking_data']['check_in_date'])) ?></span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Invoice Bottom Body -->
+                        <div class="invoice-bodybott py-2 mb-2">
+                            <div class="table-responsive border rounded-2">
+                                <table class="table mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th scope="col">Item</th>
+                                            <th scope="col">Price</th>
+                                            <th scope="col">Qty.</th>
+                                            <th scope="col">Total Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row"><?= esc($bookingComplete['hotel']['name']) ?> - <?= $bookingComplete['booking_data']['nights'] ?> Night<?= $bookingComplete['booking_data']['nights'] > 1 ? 's' : '' ?></th>
+                                            <td>₹<?= number_format($bookingComplete['pricing']['base_price'] / $bookingComplete['booking_data']['rooms'], 2) ?></td>
+                                            <td><?= $bookingComplete['booking_data']['rooms'] ?></td>
+                                            <td>₹<?= number_format($bookingComplete['pricing']['base_price'], 2) ?></td>
+                                        </tr>
+                                        <?php if ($bookingComplete['pricing']['discount'] > 0): ?>
+                                        <tr>
+                                            <th scope="row">Discount</th>
+                                            <td>-</td>
+                                            <td>-</td>
+                                            <td class="text-success">-₹<?= number_format($bookingComplete['pricing']['discount'], 2) ?></td>
+                                        </tr>
+                                        <?php endif; ?>
+                                        <tr>
+                                            <th scope="row">Tax & VAT (8%)</th>
+                                            <td>-</td>
+                                            <td>-</td>
+                                            <td>₹<?= number_format($bookingComplete['pricing']['taxes'], 2) ?></td>
+                                        </tr>
+                                        <tr class="table-active">
+                                            <th scope="row" colspan="3" class="text-end">Total Amount:</th>
+                                            <th>₹<?= number_format($bookingComplete['pricing']['total_amount'], 2) ?></th>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="invoice-bodyaction">
+                            <div class="d-flex text-end justify-content-end align-items-center">
+                                <button onclick="window.print()" class="btn btn-sm btn-light-success fw-medium me-2">
+                                    <i class="fa-solid fa-download me-1"></i>Download Invoice
+                                </button>
+                                <button onclick="window.print()" class="btn btn-sm btn-light-primary fw-medium me-2">
+                                    <i class="fa-solid fa-print me-1"></i>Print Invoice
+                                </button>
+                            </div>
+                        </div>
+
                     </div>
-                    <div class="card-body">
-                        <p class="mb-2"><strong>Customer Support:</strong></p>
-                        <p class="mb-1"><i class="fas fa-phone me-2"></i>+91 98765 43210</p>
-                        <p class="mb-1"><i class="fas fa-envelope me-2"></i>support@myfairholidays.com</p>
-                        <p class="mb-0"><i class="fas fa-clock me-2"></i>24/7 Support Available</p>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Action Buttons -->
-        <div class="row mt-5">
-            <div class="col-12 text-center">
-                <a href="<?= base_url('/') ?>" class="btn btn-primary btn-lg me-3">
-                    <i class="fas fa-home me-2"></i>Back to Home
-                </a>
-                <a href="<?= base_url('/hotels') ?>" class="btn btn-outline-primary btn-lg">
-                    <i class="fas fa-search me-2"></i>Book Another Hotel
-                </a>
-            </div>
-        </div>
-
-        <!-- Important Notes -->
-        <div class="row mt-5">
-            <div class="col-12">
-                <div class="alert alert-info">
-                    <h6><i class="fas fa-info-circle me-2"></i>Important Information:</h6>
-                    <ul class="mb-0">
-                        <li>A confirmation email has been sent to <strong><?= esc($bookingComplete['payment_data']['customer_email']) ?></strong></li>
-                        <li>Please carry a valid ID proof during check-in</li>
-                        <li>Check-in time: 2:00 PM | Check-out time: 12:00 PM</li>
-                        <li>For any changes or cancellations, please contact our support team</li>
-                    </ul>
                 </div>
             </div>
         </div>
     </div>
-</section>
-
-<style>
-.success-icon i {
-    animation: bounce 2s infinite;
-}
-
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {
-        transform: translateY(0);
-    }
-    40% {
-        transform: translateY(-10px);
-    }
-    60% {
-        transform: translateY(-5px);
-    }
-}
-
-.guest-card {
-    background-color: #f8f9fa;
-    transition: all 0.3s ease;
-}
-
-.guest-card:hover {
-    background-color: #e9ecef;
-    transform: translateY(-2px);
-}
-
-.summary-item {
-    font-size: 0.95rem;
-}
-
-.summary-total {
-    font-size: 1.1rem;
-}
-
-@media (max-width: 768px) {
-    .display-4 {
-        font-size: 2rem;
-    }
-    
-    .success-icon i {
-        font-size: 3rem !important;
-    }
-}
-</style>
+</div>
+<!-- End Modal -->
 
 <?php include APPPATH . 'Views/layouts/public_footer.php'; ?>

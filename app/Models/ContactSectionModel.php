@@ -187,28 +187,26 @@ class ContactSectionModel extends Model
      */
     public function getSectionsWithFilters($filters = [], $perPage = 20)
     {
-        $builder = $this->builder();
-        
         // Apply filters
         if (!empty($filters['section_type'])) {
-            $builder->where('section_type', $filters['section_type']);
+            $this->where('section_type', $filters['section_type']);
         }
 
         if (!empty($filters['status'])) {
-            $builder->where('status', $filters['status']);
+            $this->where('status', $filters['status']);
         }
 
         if (!empty($filters['search'])) {
-            $builder->groupStart()
-                    ->like('title', $filters['search'])
-                    ->orLike('subtitle', $filters['search'])
-                    ->orLike('content', $filters['search'])
-                    ->orLike('contact_value', $filters['search'])
-                    ->groupEnd();
+            $this->groupStart()
+                 ->like('title', $filters['search'])
+                 ->orLike('subtitle', $filters['search'])
+                 ->orLike('content', $filters['search'])
+                 ->orLike('contact_value', $filters['search'])
+                 ->groupEnd();
         }
 
-        return $builder->orderBy('section_type', 'ASC')
-                       ->orderBy('sort_order', 'ASC')
-                       ->paginate($perPage);
+        return $this->orderBy('section_type', 'ASC')
+                    ->orderBy('sort_order', 'ASC')
+                    ->paginate($perPage);
     }
 }

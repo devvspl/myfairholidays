@@ -168,7 +168,7 @@ $errorId = uniqid('error', true);
                     <h3>$<?= esc($var) ?></h3>
 
                     <table>
-                        <thead>
+                        <thead class="table-light">
                             <tr>
                                 <th>Key</th>
                                 <th>Value</th>
@@ -198,7 +198,7 @@ $errorId = uniqid('error', true);
                     <h3>Constants</h3>
 
                     <table>
-                        <thead>
+                        <thead class="table-light">
                             <tr>
                                 <th>Key</th>
                                 <th>Value</th>
@@ -273,7 +273,7 @@ $errorId = uniqid('error', true);
                     <h3>$<?= esc($var) ?></h3>
 
                     <table style="width: 100%">
-                        <thead>
+                        <thead class="table-light">
                             <tr>
                                 <th>Key</th>
                                 <th>Value</th>
@@ -311,7 +311,7 @@ $errorId = uniqid('error', true);
                     <h3>Headers</h3>
 
                     <table>
-                        <thead>
+                        <thead class="table-light">
                             <tr>
                                 <th>Header</th>
                                 <th>Value</th>
@@ -358,7 +358,7 @@ $errorId = uniqid('error', true);
                     <h3>Headers</h3>
 
                     <table>
-                        <thead>
+                        <thead class="table-light">
                             <tr>
                                 <th>Header</th>
                                 <th>Value</th>

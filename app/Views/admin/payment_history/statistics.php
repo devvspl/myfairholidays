@@ -290,7 +290,7 @@
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-striped table-hover">
-                            <thead>
+                            <thead class="table-light">
                                 <tr>
                                     <th>Gateway</th>
                                     <th>Transactions</th>
@@ -336,7 +336,7 @@
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-striped table-hover">
-                            <thead>
+                            <thead class="table-light">
                                 <tr>
                                     <th>Customer</th>
                                     <th>Transactions</th>
@@ -383,7 +383,7 @@
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-striped table-hover">
-                            <thead>
+                            <thead class="table-light">
                                 <tr>
                                     <th>Itinerary</th>
                                     <th>Bookings</th>

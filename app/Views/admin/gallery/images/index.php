@@ -139,6 +139,7 @@
                     <!-- Bulk Actions -->
                     <?php if (!empty($images)): ?>
                     <form id="bulkForm" method="post" action="<?= base_url('/admin/images/bulk-action') ?>">
+                        <?= csrf_field() ?>
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <div class="d-flex align-items-center">

@@ -35,7 +35,7 @@ class BookingModel extends Model
 
     // Validation
     protected $validationRules = [
-        'booking_reference' => 'required|max_length[50]|is_unique[bookings.booking_reference]',
+        'booking_reference' => 'permit_empty|max_length[50]|is_unique[bookings.booking_reference,id,{id}]',
         'hotel_id' => 'required|integer',
         'customer_name' => 'required|min_length[2]|max_length[100]',
         'customer_email' => 'required|valid_email|max_length[100]',

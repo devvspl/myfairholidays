@@ -29,6 +29,10 @@
     transition: all 0.2s ease;
 }
 
+.table-light tr th{
+    align-content: center;
+}
+
 /* Hover */
 .pagination li a:hover {
     background-color: #f1f3f5;

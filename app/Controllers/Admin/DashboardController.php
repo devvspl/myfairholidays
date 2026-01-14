@@ -24,6 +24,7 @@ class DashboardController extends BaseController
     protected $itineraryModel;
     protected $testimonialModel;
     protected $paymentModel;
+    protected $visitorModel;
 
     public function __construct()
     {
@@ -32,6 +33,7 @@ class DashboardController extends BaseController
         $this->itineraryModel = new ItineraryModel();
         $this->testimonialModel = new TestimonialModel();
         $this->paymentModel = new PaymentHistoryModel();
+        $this->visitorModel = new \App\Models\VisitorModel();
     }
 
     /**
@@ -51,10 +53,53 @@ class DashboardController extends BaseController
             'title' => 'Admin Dashboard',
             'stats' => $this->getDashboardStats(),
             'recent_activities' => $this->getRecentActivities(),
-            'quick_stats' => $this->getQuickStats()
+            'quick_stats' => $this->getQuickStats(),
+            'visitor_stats' => $this->visitorModel->getStatistics(30)
         ];
 
         return view('admin/dashboard/index', $data);
+    }
+    
+    /**
+     * Get visitor analytics data via AJAX
+     */
+    public function getVisitorAnalytics()
+    {
+        // Set JSON header
+        $this->response->setContentType('application/json');
+        
+        $days = $this->request->getGet('days') ?? 30;
+        
+        try {
+            $trends = $this->visitorModel->getVisitorTrends($days);
+            $stats = $this->visitorModel->getStatistics($days);
+            $topPages = $this->visitorModel->getTopPages(10, $days);
+            $browserStats = $this->visitorModel->getBrowserStats($days);
+            $platformStats = $this->visitorModel->getPlatformStats($days);
+            
+            $data = [
+                'success' => true,
+                'trends' => $trends ?: [],
+                'stats' => $stats ?: [],
+                'topPages' => $topPages ?: [],
+                'browserStats' => $browserStats ?: [],
+                'platformStats' => $platformStats ?: []
+            ];
+            
+            return $this->response->setJSON($data);
+        } catch (\Exception $e) {
+            log_message('error', 'Visitor analytics error: ' . $e->getMessage());
+            return $this->response->setJSON([
+                'success' => false,
+                'error' => 'Failed to load analytics',
+                'message' => $e->getMessage(),
+                'trends' => [],
+                'stats' => [],
+                'topPages' => [],
+                'browserStats' => [],
+                'platformStats' => []
+            ]);
+        }
     }
 
     /**
@@ -118,6 +163,48 @@ class DashboardController extends BaseController
             ];
         }
 
+        // Recent bookings
+        $bookingModel = new \App\Models\BookingModel();
+        $recentBookings = $bookingModel
+            ->select('bookings.*, hotels.name as hotel_name')
+            ->join('hotels', 'hotels.id = bookings.hotel_id', 'left')
+            ->orderBy('bookings.created_at', 'DESC')
+            ->findAll(5);
+        foreach ($recentBookings as $booking) {
+            $activities[] = [
+                'type' => 'booking',
+                'title' => $booking['booking_reference'] . ' - ' . $booking['hotel_name'],
+                'action' => 'booked by ' . $booking['customer_name'],
+                'date' => $booking['created_at'],
+                'status' => $booking['booking_status']
+            ];
+        }
+
+        // Recent hotels
+        $hotelModel = new \App\Models\HotelModel();
+        $recentHotels = $hotelModel->orderBy('created_at', 'DESC')->findAll(5);
+        foreach ($recentHotels as $hotel) {
+            $activities[] = [
+                'type' => 'hotel',
+                'title' => $hotel['name'],
+                'action' => 'added',
+                'date' => $hotel['created_at'],
+                'status' => $hotel['status']
+            ];
+        }
+
+        // Recent destinations
+        $recentDestinations = $this->destinationModel->orderBy('created_at', 'DESC')->findAll(5);
+        foreach ($recentDestinations as $destination) {
+            $activities[] = [
+                'type' => 'destination',
+                'title' => $destination['name'],
+                'action' => 'created',
+                'date' => $destination['created_at'],
+                'status' => $destination['status']
+            ];
+        }
+
         // Recent itineraries
         $recentItineraries = $this->itineraryModel->orderBy('created_at', 'DESC')->findAll(5);
         foreach ($recentItineraries as $itinerary) {
@@ -142,12 +229,37 @@ class DashboardController extends BaseController
             ];
         }
 
+        // Recent contacts
+        $contactModel = new \App\Models\ContactModel();
+        $recentContacts = $contactModel->orderBy('created_at', 'DESC')->findAll(5);
+        foreach ($recentContacts as $contact) {
+            $activities[] = [
+                'type' => 'contact',
+                'title' => $contact['subject'],
+                'action' => 'submitted by ' . $contact['name'],
+                'date' => $contact['created_at'],
+                'status' => $contact['status']
+            ];
+        }
+
+        // Recent payments
+        $recentPayments = $this->paymentModel->orderBy('created_at', 'DESC')->findAll(5);
+        foreach ($recentPayments as $payment) {
+            $activities[] = [
+                'type' => 'payment',
+                'title' => 'Payment #' . $payment['id'] . ' - $' . number_format($payment['amount'], 2),
+                'action' => 'received',
+                'date' => $payment['created_at'],
+                'status' => $payment['status']
+            ];
+        }
+
         // Sort by date
         usort($activities, function($a, $b) {
             return strtotime($b['date']) - strtotime($a['date']);
         });
 
-        return array_slice($activities, 0, 10);
+        return array_slice($activities, 0, 15);
     }
 
     /**

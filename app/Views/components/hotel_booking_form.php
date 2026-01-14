@@ -29,16 +29,48 @@ $isCompact = $size === 'compact';
       <div class="d-block mb-3">
          <div class="d-flex align-items-center justify-content-start">
             <div class="text-dark fw-bold fs-3 me-2">₹<?= number_format($hotel['price_per_night'] ?? 0, 0) ?></div>
-            <?php if (!empty($hotel['is_featured'])): ?>
-            <div class="text-muted-2 fw-medium text-decoration-line-through me-2">₹<?= number_format(($hotel['price_per_night'] ?? 0) * 1.25, 0) ?></div>
-            <div class="text-danger fw-semibold">20% Off</div>
+            <?php 
+            // Calculate discount information
+            $hasDiscount = false;
+            $originalPrice = $hotel['price_per_night'] ?? 0;
+            $discountPercentage = 0;
+            
+            if (!empty($hotel['discount_type']) && !empty($hotel['discount_value'])) {
+               $hasDiscount = true;
+               if ($hotel['discount_type'] === 'percentage') {
+                  $discountPercentage = $hotel['discount_value'];
+                  $originalPrice = $hotel['price_per_night'] / (1 - ($discountPercentage / 100));
+               } else {
+                  // Fixed discount
+                  $originalPrice = $hotel['price_per_night'] + $hotel['discount_value'];
+                  $discountPercentage = ($hotel['discount_value'] / $originalPrice) * 100;
+               }
+            } elseif (!empty($hotel['is_featured'])) {
+               // Fallback for featured hotels
+               $hasDiscount = true;
+               $discountPercentage = 20;
+               $originalPrice = $hotel['price_per_night'] * 1.25;
+            }
+            
+            if ($hasDiscount): ?>
+            <div class="text-muted-2 fw-medium text-decoration-line-through me-2">₹<?= number_format($originalPrice, 0) ?></div>
+            <div class="badge bg-danger text-white"><?= number_format($discountPercentage, 0) ?>% OFF</div>
             <?php endif; ?>
          </div>
          <div class="d-flex align-items-start justify-content-start">
             <div class="text-muted-2 text-md">
-               <?= !empty($hotel['is_featured']) ? 'Special featured price - inclusive of all taxes' : 'inclusive of all taxes' ?>
+               <?php if ($hasDiscount): ?>
+               <span class="text-success fw-semibold">Special Offer!</span> Inclusive of all taxes
+               <?php else: ?>
+               Inclusive of all taxes
+               <?php endif; ?>
             </div>
          </div>
+         <?php if ($hasDiscount): ?>
+         <div class="alert alert-success mt-2 mb-0 py-2 px-3">
+            <small><i class="fa-solid fa-tag me-1"></i>Save ₹<?= number_format($originalPrice - $hotel['price_per_night'], 0) ?> per night with this booking!</small>
+         </div>
+         <?php endif; ?>
       </div>
 
       <!-- Booking Form -->

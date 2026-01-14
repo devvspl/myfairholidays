@@ -124,11 +124,19 @@ class BookingController extends Controller
         $children = $bookingData['children'];
         $infants = $bookingData['infants'];
 
-        // Calculate pricing
-        $basePrice = $hotel['price_per_night'] * $nights * $rooms;
-        $discount = $hotel['is_featured'] ? ($basePrice * 0.15) : 0; // 15% discount for featured hotels
-        $taxes = ($basePrice - $discount) * 0.08; // 8% taxes
-        $totalPrice = $basePrice - $discount + $taxes;
+        // Calculate pricing with hotel discount
+        $pricePerNight = $hotel['price_per_night'];
+        $basePrice = $pricePerNight * $nights * $rooms;
+        
+        // Calculate discount using hotel's discount settings
+        $discountInfo = $this->hotelModel->calculateDiscountedPrice($hotel);
+        $discountPerNight = $discountInfo['discount_amount'];
+        $discount = $discountPerNight * $nights * $rooms;
+        
+        // Calculate taxes on discounted price
+        $priceAfterDiscount = $basePrice - $discount;
+        $taxes = $priceAfterDiscount * 0.08; // 8% taxes
+        $totalPrice = $priceAfterDiscount + $taxes;
 
         $data = array_merge($this->commonData, [
             'title' => 'Complete Your Booking - Step 1',
@@ -144,8 +152,10 @@ class BookingController extends Controller
             'adults' => $adults,
             'children' => $children,
             'infants' => $infants,
+            'pricePerNight' => $pricePerNight,
             'basePrice' => $basePrice,
             'discount' => $discount,
+            'discountInfo' => $discountInfo,
             'taxes' => $taxes,
             'totalPrice' => $totalPrice,
             'currentStep' => 1
@@ -180,11 +190,19 @@ class BookingController extends Controller
         $children = $bookingData['children'] ?? 0;
         $infants = $bookingData['infants'] ?? 0;
 
-        // Calculate pricing
-        $basePrice = $hotel['price_per_night'] * $nights * $rooms;
-        $discount = $hotel['is_featured'] ? ($basePrice * 0.15) : 0;
-        $taxes = ($basePrice - $discount) * 0.08;
-        $totalPrice = $basePrice - $discount + $taxes;
+        // Calculate pricing with hotel discount
+        $pricePerNight = $hotel['price_per_night'];
+        $basePrice = $pricePerNight * $nights * $rooms;
+        
+        // Calculate discount using hotel's discount settings
+        $discountInfo = $this->hotelModel->calculateDiscountedPrice($hotel);
+        $discountPerNight = $discountInfo['discount_amount'];
+        $discount = $discountPerNight * $nights * $rooms;
+        
+        // Calculate taxes on discounted price
+        $priceAfterDiscount = $basePrice - $discount;
+        $taxes = $priceAfterDiscount * 0.08; // 8% taxes
+        $totalPrice = $priceAfterDiscount + $taxes;
 
         $data = array_merge($this->commonData, [
             'title' => 'Guest Information - Step 2',
@@ -198,8 +216,10 @@ class BookingController extends Controller
             'adults' => $adults,
             'children' => $children,
             'infants' => $infants,
+            'pricePerNight' => $pricePerNight,
             'basePrice' => $basePrice,
             'discount' => $discount,
+            'discountInfo' => $discountInfo,
             'taxes' => $taxes,
             'totalPrice' => $totalPrice,
             'currentStep' => 2
@@ -219,10 +239,17 @@ class BookingController extends Controller
 
         $validation = \Config\Services::validation();
         $validation->setRules([
-            'guests.*.first_name' => 'required|min_length[2]|max_length[50]',
-            'guests.*.last_name' => 'required|min_length[2]|max_length[50]',
-            'guests.*.date_of_birth' => 'required|valid_date',
-            'guests.*.passport_number' => 'permit_empty|min_length[6]|max_length[20]'
+            'customer_name' => 'required|min_length[3]|max_length[100]',
+            'customer_email' => 'required|valid_email',
+            'customer_phone' => 'required|min_length[10]|max_length[20]',
+            'customer_country' => 'required|min_length[2]|max_length[100]',
+            'special_requests' => 'permit_empty|max_length[1000]',
+            'check_in_date' => 'permit_empty|valid_date',
+            'check_out_date' => 'permit_empty|valid_date',
+            'rooms' => 'permit_empty|integer|greater_than[0]',
+            'adults' => 'permit_empty|integer|greater_than[0]',
+            'children' => 'permit_empty|integer',
+            'infants' => 'permit_empty|integer'
         ]);
 
         if (!$validation->withRequest($this->request)->run()) {
@@ -235,8 +262,57 @@ class BookingController extends Controller
                 return redirect()->to('/booking')->with('error', 'Please start the booking process again.');
             }
 
-            // Get guest information
-            $guestData = $this->request->getPost('guests');
+            // Check if dates were modified
+            $checkInDate = $this->request->getPost('check_in_date');
+            $checkOutDate = $this->request->getPost('check_out_date');
+            
+            if (!empty($checkInDate) && !empty($checkOutDate)) {
+                // Validate dates
+                $checkIn = new \DateTime($checkInDate);
+                $checkOut = new \DateTime($checkOutDate);
+                $today = new \DateTime('today');
+                
+                if ($checkIn < $today) {
+                    return redirect()->back()->withInput()->with('error', 'Check-in date cannot be in the past.');
+                }
+                
+                if ($checkOut <= $checkIn) {
+                    return redirect()->back()->withInput()->with('error', 'Check-out date must be after check-in date.');
+                }
+                
+                // Update booking data with new dates
+                $bookingData['check_in_date'] = $checkInDate;
+                $bookingData['check_out_date'] = $checkOutDate;
+            }
+            
+            // Check if rooms and guests were modified
+            $rooms = $this->request->getPost('rooms');
+            $adults = $this->request->getPost('adults');
+            $children = $this->request->getPost('children');
+            $infants = $this->request->getPost('infants');
+            
+            if (!empty($rooms)) {
+                $bookingData['rooms'] = (int)$rooms;
+            }
+            if (!empty($adults)) {
+                $bookingData['adults'] = (int)$adults;
+            }
+            if (isset($children)) {
+                $bookingData['children'] = (int)$children;
+            }
+            if (isset($infants)) {
+                $bookingData['infants'] = (int)$infants;
+            }
+            
+            // Update session with modified booking data
+            session()->set('booking_data', $bookingData);
+
+            // Get customer information
+            $customerName = $this->request->getPost('customer_name');
+            $customerEmail = $this->request->getPost('customer_email');
+            $customerPhone = $this->request->getPost('customer_phone');
+            $customerCountry = $this->request->getPost('customer_country');
+            $specialRequests = $this->request->getPost('special_requests');
             
             // Get hotel details for pricing calculation
             $hotel = $this->hotelModel->find($bookingData['hotel_id']);
@@ -249,27 +325,40 @@ class BookingController extends Controller
             $checkOut = new \DateTime($bookingData['check_out_date']);
             $nights = $checkIn->diff($checkOut)->days;
             
-            // Calculate pricing
-            $basePrice = $hotel['price_per_night'] * $nights * $bookingData['rooms'];
-            $discount = $hotel['is_featured'] ? ($basePrice * 0.15) : 0;
-            $taxes = ($basePrice - $discount) * 0.08;
-            $totalAmount = $basePrice - $discount + $taxes;
+            // Calculate pricing with hotel discount
+            $pricePerNight = $hotel['price_per_night'];
+            $basePrice = $pricePerNight * $nights * $bookingData['rooms'];
+            
+            // Calculate discount using hotel's discount settings
+            $discountInfo = $this->hotelModel->calculateDiscountedPrice($hotel);
+            $discountPerNight = $discountInfo['discount_amount'];
+            $discount = $discountPerNight * $nights * $bookingData['rooms'];
+            
+            // Calculate taxes on discounted price
+            $priceAfterDiscount = $basePrice - $discount;
+            $taxes = $priceAfterDiscount * 0.08; // 8% taxes
+            $totalAmount = $priceAfterDiscount + $taxes;
 
             // Prepare booking data for database
             $bookingDbData = [
                 'hotel_id' => $bookingData['hotel_id'],
-                'customer_name' => $guestData[0]['first_name'] . ' ' . $guestData[0]['last_name'], // Primary guest
-                'customer_email' => session()->get('temp_customer_email') ?: 'guest@example.com', // Will be updated in step 3
-                'customer_phone' => session()->get('temp_customer_phone') ?: '0000000000', // Will be updated in step 3
+                'customer_name' => $customerName,
+                'customer_email' => $customerEmail,
+                'customer_phone' => $customerPhone,
                 'check_in_date' => $bookingData['check_in_date'],
                 'check_out_date' => $bookingData['check_out_date'],
                 'nights' => $nights,
                 'rooms' => $bookingData['rooms'],
                 'adults' => $bookingData['adults'],
-                'children' => $bookingData['children'],
-                'infants' => $bookingData['infants'],
-                'guest_details' => json_encode($guestData),
-                'special_requests' => $bookingData['special_requests'] ?? null,
+                'children' => $bookingData['children'] ?? 0,
+                'infants' => $bookingData['infants'] ?? 0,
+                'guest_details' => json_encode([
+                    'name' => $customerName,
+                    'email' => $customerEmail,
+                    'phone' => $customerPhone,
+                    'country' => $customerCountry
+                ]),
+                'special_requests' => $specialRequests,
                 'base_price' => $basePrice,
                 'discount' => $discount,
                 'taxes' => $taxes,
@@ -290,8 +379,13 @@ class BookingController extends Controller
                 session()->set('booking_id', $bookingId);
             }
 
-            // Save guest information to session for step 3
-            session()->set('guest_data', $guestData);
+            // Save customer information to session for step 3
+            session()->set('customer_data', [
+                'name' => $customerName,
+                'email' => $customerEmail,
+                'phone' => $customerPhone,
+                'country' => $customerCountry
+            ]);
 
             return redirect()->to('/booking/step3');
 
@@ -307,9 +401,9 @@ class BookingController extends Controller
     public function step3()
     {
         $bookingData = session()->get('booking_data');
-        $guestData = session()->get('guest_data');
+        $customerData = session()->get('customer_data');
         
-        if (!$bookingData || !$guestData) {
+        if (!$bookingData || !$customerData) {
             return redirect()->to('/booking')->with('error', 'Please complete all previous steps.');
         }
 
@@ -329,18 +423,26 @@ class BookingController extends Controller
         $children = $bookingData['children'] ?? 0;
         $infants = $bookingData['infants'] ?? 0;
 
-        // Calculate pricing
-        $basePrice = $hotel['price_per_night'] * $nights * $rooms;
-        $discount = $hotel['is_featured'] ? ($basePrice * 0.15) : 0;
-        $taxes = ($basePrice - $discount) * 0.08;
-        $totalPrice = $basePrice - $discount + $taxes;
+        // Calculate pricing with hotel discount
+        $pricePerNight = $hotel['price_per_night'];
+        $basePrice = $pricePerNight * $nights * $rooms;
+        
+        // Calculate discount using hotel's discount settings
+        $discountInfo = $this->hotelModel->calculateDiscountedPrice($hotel);
+        $discountPerNight = $discountInfo['discount_amount'];
+        $discount = $discountPerNight * $nights * $rooms;
+        
+        // Calculate taxes on discounted price
+        $priceAfterDiscount = $basePrice - $discount;
+        $taxes = $priceAfterDiscount * 0.08; // 8% taxes
+        $totalPrice = $priceAfterDiscount + $taxes;
 
         $data = array_merge($this->commonData, [
             'title' => 'Payment & Billing - Step 3',
             'meta_description' => 'Complete your hotel booking payment.',
             'hotel' => $hotel,
             'bookingData' => $bookingData,
-            'guestData' => $guestData,
+            'customerData' => $customerData,
             'checkIn' => $checkIn,
             'checkOut' => $checkOut,
             'nights' => $nights,
@@ -348,8 +450,10 @@ class BookingController extends Controller
             'adults' => $adults,
             'children' => $children,
             'infants' => $infants,
+            'pricePerNight' => $pricePerNight,
             'basePrice' => $basePrice,
             'discount' => $discount,
+            'discountInfo' => $discountInfo,
             'taxes' => $taxes,
             'totalPrice' => $totalPrice,
             'currentStep' => 3
@@ -369,13 +473,6 @@ class BookingController extends Controller
 
         $validation = \Config\Services::validation();
         $validation->setRules([
-            'billing_name' => 'required|min_length[2]|max_length[100]',
-            'billing_email' => 'required|valid_email',
-            'billing_phone' => 'required|min_length[10]|max_length[20]',
-            'billing_address1' => 'required|min_length[5]|max_length[255]',
-            'billing_city' => 'required|min_length[2]|max_length[100]',
-            'billing_country' => 'required|min_length[2]|max_length[100]',
-            'billing_postal_code' => 'required|min_length[3]|max_length[20]',
             'payment_method' => 'required|in_list[visa,mastercard,paypal,amazon_pay]'
         ]);
 
@@ -389,30 +486,16 @@ class BookingController extends Controller
                 return redirect()->to('/booking')->with('error', 'Please start the booking process again.');
             }
 
-            $billingData = $this->request->getPost();
+            $customerData = session()->get('customer_data');
+            $paymentMethod = $this->request->getPost('payment_method');
             
             // Generate payment reference
             $paymentReference = 'PAY-' . date('Ymd') . '-' . strtoupper(uniqid());
 
-            // Update booking with billing information and payment details
+            // Update booking with payment details
             $updateData = [
-                'customer_name' => $billingData['billing_name'],
-                'customer_email' => $billingData['billing_email'],
-                'customer_phone' => $billingData['billing_phone'],
-                'billing_details' => json_encode([
-                    'name' => $billingData['billing_name'],
-                    'email' => $billingData['billing_email'],
-                    'phone' => $billingData['billing_phone'],
-                    'address1' => $billingData['billing_address1'],
-                    'address2' => $billingData['billing_address2'] ?? '',
-                    'city' => $billingData['billing_city'],
-                    'state' => $billingData['billing_state'] ?? '',
-                    'country' => $billingData['billing_country'],
-                    'postal_code' => $billingData['billing_postal_code']
-                ]),
-                'payment_method' => $billingData['payment_method'],
+                'payment_method' => $paymentMethod,
                 'payment_reference' => $paymentReference,
-                'notes' => $billingData['special_notes'] ?? null,
                 'booking_status' => 'confirmed',
                 'payment_status' => 'paid', // In real implementation, this would be 'pending' until payment gateway confirms
                 'confirmed_at' => date('Y-m-d H:i:s')
@@ -444,13 +527,18 @@ class BookingController extends Controller
                     'infants' => $booking['infants']
                 ],
                 'guest_data' => json_decode($booking['guest_details'], true),
-                'billing_data' => json_decode($booking['billing_details'], true),
+                'billing_data' => [
+                    'name' => $booking['customer_name'],
+                    'email' => $booking['customer_email'],
+                    'phone' => $booking['customer_phone']
+                ],
                 'payment_data' => [
                     'amount' => $booking['total_amount'],
                     'currency' => 'INR',
                     'payment_method' => $booking['payment_method'],
                     'payment_reference' => $booking['payment_reference'],
-                    'status' => $booking['payment_status']
+                    'status' => $booking['payment_status'],
+                    'customer_email' => $booking['customer_email']
                 ],
                 'pricing' => [
                     'base_price' => $booking['base_price'],
@@ -490,7 +578,7 @@ class BookingController extends Controller
         ]);
 
         // Clear booking session data but keep booking_complete for the success page
-        session()->remove(['booking_data', 'guest_data', 'booking_id']);
+        session()->remove(['booking_data', 'customer_data', 'booking_id']);
 
         return view('public/booking/success', $data);
     }

@@ -176,9 +176,9 @@
                                         <li class="sub-menu-item">
                                              <a class="sub-menu-link" href="<?= base_url('/admin/user-management') ?>">Users</a>
                                         </li>
-                                        <li class="sub-menu-item">
+                                        <!-- <li class="sub-menu-item">
                                              <a class="sub-menu-link" href="<?= base_url('/admin/roles') ?>">Roles & Permissions</a>
-                                        </li>
+                                        </li> -->
                                    </ul>
                               </div>
                          </li>
@@ -248,12 +248,12 @@
                                         <li class="sub-menu-item">
                                              <a class="sub-menu-link" href="<?= base_url('/admin/hotels') ?>">Hotels</a>
                                         </li>
-                                        <li class="sub-menu-item">
+                                        <!-- <li class="sub-menu-item">
                                              <a class="sub-menu-link" href="<?= base_url('/admin/itineraries') ?>">Itineraries</a>
                                         </li>
                                         <li class="sub-menu-item">
                                              <a class="sub-menu-link" href="<?= base_url('/admin/itinerary-categories') ?>">Itinerary Categories</a>
-                                        </li>
+                                        </li> -->
                                    </ul>
                               </div>
                          </li>
@@ -279,6 +279,16 @@
                                         </li>
                                    </ul>
                               </div>
+                         </li>
+
+                         <!-- Bookings -->
+                         <li class="menu-item">
+                              <a class="menu-link" href="<?= base_url('/admin/bookings') ?>">
+                                   <span class="nav-icon">
+                                        <i data-lucide="calendar-check"></i>
+                                   </span>
+                                   <span class="nav-text"> Bookings </span>
+                              </a>
                          </li>
 
                          <!-- Payments -->

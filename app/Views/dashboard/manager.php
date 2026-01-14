@@ -147,7 +147,7 @@
                <div class="card-body p-0">
                     <div class="table-responsive">
                          <table class="table table-sm table-hover mb-0">
-                              <thead>
+                              <thead class="table-light">
                                    <tr>
                                         <th>Name</th>
                                         <th>Email</th>

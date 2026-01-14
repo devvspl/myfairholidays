@@ -51,7 +51,7 @@
 
                         <div class="table-responsive">
                             <table class="table table-striped table-hover">
-                                <thead>
+                                <thead class="table-light">
                                     <tr>
                                         <th>Name</th>
                                         <th>Type</th>

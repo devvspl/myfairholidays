@@ -48,6 +48,9 @@ class PublicController extends BaseController
      */
     public function index()
     {
+        // Track visitor
+        $this->trackVisit('Home - My Fair Holidays');
+        
         // Get international destinations (destination_type_id = 2)
         $internationalDestinations = $this->destinationModel
             ->select('destinations.*, destination_types.name as type_name')
@@ -141,6 +144,9 @@ class PublicController extends BaseController
      */
     public function testimonials()
     {
+        // Track visitor
+        $this->trackVisit('Customer Testimonials');
+        
         $perPage = 12;
         $page = $this->request->getVar('page') ?? 1;
 
@@ -258,6 +264,9 @@ class PublicController extends BaseController
 
     public function about()
     {
+        // Track visitor
+        $this->trackVisit('About Us - My Fair Holidays');
+        
         // Get all about sections grouped by type
         $sections = $this->aboutSectionModel->getAllSectionsGrouped();
 
@@ -280,6 +289,9 @@ class PublicController extends BaseController
      */
     public function contact()
     {
+        // Track visitor
+        $this->trackVisit('Contact Us');
+        
         // Get all contact sections grouped by type
         $sections = $this->contactSectionModel->getAllSectionsGrouped();
 
@@ -443,6 +455,9 @@ class PublicController extends BaseController
      */
     public function destinations()
     {
+        // Track visitor
+        $this->trackVisit('Hotels - Find Your Perfect Stay');
+        
         $perPage = 5;
         
         // Get all filter parameters from URL
@@ -805,6 +820,9 @@ class PublicController extends BaseController
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Hotel not found');
         }
 
+        // Track visitor
+        $this->trackVisit($hotel['name'] . ' - Hotel Details');
+        
         // Get hotel images
         $images = $this->hotelImageModel->getHotelImages($hotel['id']);
 

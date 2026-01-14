@@ -1,5 +1,4 @@
 <?php include APPPATH . 'Views/layouts/public_header.php'; ?>
-
 <!-- Hero Section -->
 <section class="bg-cover position-relative" style="background-image:url('<?= base_url('main/images/contactus.png') ?>');background-size: cover;background-position: center;background-repeat: no-repeat;" data-overlay="5">
    <div class="container">
@@ -10,9 +9,9 @@
                   <h1 class="xl-heading text-light"><?= esc($hotel['name']) ?></h1>
                   <p class="text-light">
                      <?php if (!empty($hotel['short_description'])): ?>
-                        <?= esc($hotel['short_description']) ?>
+                     <?= esc($hotel['short_description']) ?>
                      <?php else: ?>
-                        Experience luxury and comfort at this <?= $hotel['star_rating'] ?? 0 ?> star hotel in <?= esc($hotel['destination_name'] ?? 'prime location') ?>
+                     Experience luxury and comfort at this <?= $hotel['star_rating'] ?? 0 ?> star hotel in <?= esc($hotel['destination_name'] ?? 'prime location') ?>
                      <?php endif; ?>
                   </p>
                </div>
@@ -22,7 +21,6 @@
    </div>
    <div class="fpc-banner"></div>
 </section>
-
 <!-- Hotel Details Start -->
 <section class="pt-3 gray-simple">
    <div class="container">
@@ -80,10 +78,10 @@
                         <div class="drix-last">
                            <div class="d-flex align-items-center gap-2 flex-wrap">
                               <a href="#" onclick="shareHotel(); return false;" class="btn btn-outline-primary btn-sm fw-medium">
-                                 <i class="fa-solid fa-share-nodes me-1"></i><span class="d-none d-sm-inline">Share</span>
+                              <i class="fa-solid fa-share-nodes me-1"></i><span class="d-none d-sm-inline">Share</span>
                               </a>
                               <a href="<?= base_url('/booking?hotel_id=' . $hotel['id']) ?>" class="btn btn-primary btn-sm  fw-medium">
-                                 <i class="fa-solid fa-calendar-check me-1"></i>Book Now
+                              <i class="fa-solid fa-calendar-check me-1"></i>Book Now
                               </a>
                            </div>
                         </div>
@@ -94,11 +92,11 @@
                   <div class="left-img">
                      <?php if (!empty($images) && count($images) > 0): ?>
                      <a href="<?= base_url($images[0]['image_path']) ?>" data-lightbox="hotel-gallery">
-                        <img src="<?= base_url($images[0]['image_path']) ?>" alt="<?= esc($images[0]['alt_text'] ?? $hotel['name']) ?>" class="img-fluid">
+                     <img src="<?= base_url($images[0]['image_path']) ?>" alt="<?= esc($images[0]['alt_text'] ?? $hotel['name']) ?>" class="img-fluid">
                      </a>
                      <?php elseif (!empty($hotel['featured_image'])): ?>
                      <a href="<?= base_url($hotel['featured_image']) ?>" data-lightbox="hotel-gallery">
-                        <img src="<?= base_url($hotel['featured_image']) ?>" alt="<?= esc($hotel['name']) ?>" class="img-fluid">
+                     <img src="<?= base_url($hotel['featured_image']) ?>" alt="<?= esc($hotel['name']) ?>" class="img-fluid">
                      </a>
                      <?php else: ?>
                      <img src="https://placehold.co/1100x700/e9ecef/6c757d?text=<?= urlencode($hotel['name']) ?>" alt="<?= esc($hotel['name']) ?>" class="img-fluid">
@@ -106,49 +104,46 @@
                   </div>
                   <div class="right-grid position-relative">
                      <?php if (!empty($images) && count($images) > 1): ?>
-                        <?php for ($i = 1; $i <= 4 && $i < count($images); $i++): ?>
-                        <a href="<?= base_url($images[$i]['image_path']) ?>" data-lightbox="hotel-gallery">
-                           <img src="<?= base_url($images[$i]['image_path']) ?>" alt="<?= esc($images[$i]['alt_text'] ?? $hotel['name']) ?>" class="rounded-2 img-fluid">
-                        </a>
-                        <?php endfor; ?>
-                        
-                        <?php if (count($images) < 5): ?>
-                           <?php for ($j = count($images); $j < 5; $j++): ?>
-                           <?php if (!empty($hotel['featured_image'])): ?>
-                           <a href="<?= base_url($hotel['featured_image']) ?>" data-lightbox="hotel-gallery">
-                              <img src="<?= base_url($hotel['featured_image']) ?>" alt="<?= esc($hotel['name']) ?>" class="rounded-2 img-fluid">
-                           </a>
-                           <?php else: ?>
-                           <img src="https://placehold.co/1100x700/e9ecef/6c757d?text=<?= urlencode($hotel['name']) ?>" alt="<?= esc($hotel['name']) ?>" class="rounded-2 img-fluid">
-                           <?php endif; ?>
-                           <?php endfor; ?>
-                        <?php endif; ?>
+                     <?php for ($i = 1; $i <= 4 && $i < count($images); $i++): ?>
+                     <a href="<?= base_url($images[$i]['image_path']) ?>" data-lightbox="hotel-gallery">
+                     <img src="<?= base_url($images[$i]['image_path']) ?>" alt="<?= esc($images[$i]['alt_text'] ?? $hotel['name']) ?>" class="rounded-2 img-fluid">
+                     </a>
+                     <?php endfor; ?>
+                     <?php if (count($images) < 5): ?>
+                     <?php for ($j = count($images); $j < 5; $j++): ?>
+                     <?php if (!empty($hotel['featured_image'])): ?>
+                     <a href="<?= base_url($hotel['featured_image']) ?>" data-lightbox="hotel-gallery">
+                     <img src="<?= base_url($hotel['featured_image']) ?>" alt="<?= esc($hotel['name']) ?>" class="rounded-2 img-fluid">
+                     </a>
                      <?php else: ?>
-                        <?php for ($i = 0; $i < 4; $i++): ?>
-                        <?php if (!empty($hotel['featured_image'])): ?>
-                        <a href="<?= base_url($hotel['featured_image']) ?>" data-lightbox="hotel-gallery">
-                           <img src="<?= base_url($hotel['featured_image']) ?>" alt="<?= esc($hotel['name']) ?>" class="rounded-2 img-fluid">
-                        </a>
-                        <?php else: ?>
-                        <img src="https://placehold.co/1100x700/e9ecef/6c757d?text=<?= urlencode($hotel['name']) ?>" alt="<?= esc($hotel['name']) ?>" class="rounded-2 img-fluid">
-                        <?php endif; ?>
-                        <?php endfor; ?>
+                     <img src="https://placehold.co/1100x700/e9ecef/6c757d?text=<?= urlencode($hotel['name']) ?>" alt="<?= esc($hotel['name']) ?>" class="rounded-2 img-fluid">
                      <?php endif; ?>
-                     
+                     <?php endfor; ?>
+                     <?php endif; ?>
+                     <?php else: ?>
+                     <?php for ($i = 0; $i < 4; $i++): ?>
+                     <?php if (!empty($hotel['featured_image'])): ?>
+                     <a href="<?= base_url($hotel['featured_image']) ?>" data-lightbox="hotel-gallery">
+                     <img src="<?= base_url($hotel['featured_image']) ?>" alt="<?= esc($hotel['name']) ?>" class="rounded-2 img-fluid">
+                     </a>
+                     <?php else: ?>
+                     <img src="https://placehold.co/1100x700/e9ecef/6c757d?text=<?= urlencode($hotel['name']) ?>" alt="<?= esc($hotel['name']) ?>" class="rounded-2 img-fluid">
+                     <?php endif; ?>
+                     <?php endfor; ?>
+                     <?php endif; ?>
                      <div class="position-absolute end-0 bottom-0 mb-3 me-3">
                         <?php if (!empty($images) && count($images) > 5): ?>
                         <a href="#" onclick="openGallery(); return false;" class="btn btn-md btn-whites fw-medium text-dark">
-                           <i class="fa-solid fa-caret-right me-1"></i>+<?= count($images) - 5 ?> More Photos
+                        <i class="fa-solid fa-caret-right me-1"></i>+<?= count($images) - 5 ?> More Photos
                         </a>
                         <?php else: ?>
                         <a href="<?= !empty($images) ? base_url($images[0]['image_path']) : (!empty($hotel['featured_image']) ? base_url($hotel['featured_image']) : 'https://placehold.co/1200x800') ?>" data-lightbox="hotel-gallery" class="btn btn-md btn-whites fw-medium text-dark">
-                           <i class="fa-solid fa-caret-right me-1"></i>View Gallery
+                        <i class="fa-solid fa-caret-right me-1"></i>View Gallery
                         </a>
                         <?php endif; ?>
                      </div>
                   </div>
                </div>
-               
                <!-- Hidden images for lightbox -->
                <?php if (!empty($images) && count($images) > 5): ?>
                <div style="display: none;">
@@ -163,151 +158,146 @@
             <div class="container p-0">
                <div class="row">
                   <!-- Top Attractions -->
+                  <?php
+                     // Prepare data for all three sections
+                     $displayAttractions = [];
+                     if (!empty($hotel['nearby_attractions'])) {
+                        $attractionsText = strip_tags($hotel['nearby_attractions']);
+                        $attractions = array_filter(array_map('trim', explode("\n", $attractionsText)));
+                        // Also check for comma-separated items
+                        if (count($attractions) === 1 && strpos($attractions[0], ',') !== false) {
+                           $attractions = array_filter(array_map('trim', explode(',', $attractions[0])));
+                        }
+                        $displayAttractions = array_slice($attractions, 0, 10);
+                     }
+                     
+                     $displayTransport = [];
+                     if (!empty($hotel['transportation_info'])) {
+                        $transportText = strip_tags($hotel['transportation_info']);
+                        $transportInfo = array_filter(array_map('trim', explode("\n", $transportText)));
+                        // Also check for comma-separated items
+                        if (count($transportInfo) === 1 && strpos($transportInfo[0], ',') !== false) {
+                           $transportInfo = array_filter(array_map('trim', explode(',', $transportInfo[0])));
+                        }
+                        $displayTransport = array_slice($transportInfo, 0, 10);
+                     }
+                     
+                     $displayDining = [];
+                     if (!empty($hotel['dining_entertainment'])) {
+                        $diningText = strip_tags($hotel['dining_entertainment']);
+                        $diningItems = array_filter(array_map('trim', explode("\n", $diningText)));
+                        // Also check for comma-separated items
+                        if (count($diningItems) === 1 && strpos($diningItems[0], ',') !== false) {
+                           $diningItems = array_filter(array_map('trim', explode(',', $diningItems[0])));
+                        }
+                        $displayDining = array_slice($diningItems, 0, 10);
+                     }
+                     
+                     // Only show the section if at least one has data
+                     $hasAnyData = !empty($displayAttractions) || !empty($displayTransport) || !empty($displayDining);
+                     
+                     // Count how many sections have data for proper column sizing
+                     $sectionsWithData = 0;
+                     if (!empty($displayAttractions)) $sectionsWithData++;
+                     if (!empty($displayTransport)) $sectionsWithData++;
+                     if (!empty($displayDining)) $sectionsWithData++;
+                     
+                     // Determine column class based on number of sections
+                     $colClass = 'col-xl-4 col-lg-4 col-md-6';
+                     if ($sectionsWithData == 2) {
+                        $colClass = 'col-xl-6 col-lg-6 col-md-6';
+                     } elseif ($sectionsWithData == 1) {
+                        $colClass = 'col-xl-12 col-lg-12 col-md-12';
+                     }
+                  ?>
+                  
+                  <?php if ($hasAnyData): ?>
                   <div class="col-xl-12 col-lg-12 col-md-12 p-0">
-                     <div class="row align-items-center justify-content-between gx-4">
-                        <div class="col-xl-4 col-lg-4 col-md-4 p-0">
-                           <div class="card p-3 mb-4">
+                     <div class="row align-items-stretch justify-content-start gx-4">
+                        <?php if (!empty($displayAttractions)): ?>
+                        <div class="<?= $colClass ?> p-1">
+                           <div class="card p-3 mb-4 h-100">
                               <div class="nearestServ-wrap">
                                  <div class="nearestServ-head d-flex mb-1">
                                     <h6 class="fs-6 fw-semibold text-primary mb-1"><i class="fa-brands fa-servicestack me-2"></i>Top Attractions</h6>
                                  </div>
                                  <div class="nearestServ-caps">
                                     <ul class="row align-items-start g-2 p-0 m-0">
-                                       <?php if (!empty($hotel['nearby_attractions'])): ?>
-                                       <?php
-                                          // Extract plain text attractions from HTML content
-                                          $attractionsHtml = $hotel['nearby_attractions'];
-                                          // Remove HTML tags and get plain text lines
-                                          $attractionsText = strip_tags($attractionsHtml);
-                                          $attractions = array_filter(explode("\n", $attractionsText));
-                                          $displayAttractions = [];
-
-                                          foreach ($attractions as $attraction) {
-                                             $attraction = trim($attraction);
-                                             if (!empty($attraction) && !preg_match('/^(Cultural|Natural|Entertainment|Day Trip)/i', $attraction)) {
-                                                   $displayAttractions[] = $attraction;
-                                             }
-                                          }
-
-                                          foreach (array_slice($displayAttractions, 0, 3) as $attraction):
-                                             ?>
-                                                                              <li class="col-12 text-muted-2"><?= esc($attraction) ?></li>
-                                                                              <?php
-                                          endforeach;
-                                       ?>
-                                       <?php else: ?>
-                                       <li class="col-12 text-muted-2"><?= esc($hotel['destination_name'] ?? 'Local Area') ?> (nearby)</li>
-                                       <?php if (!empty($hotel['destination_name'])): ?>
-                                       <li class="col-12 text-muted-2"><?= esc($hotel['destination_name']) ?> Tourist Spots</li>
-                                       <li class="col-12 text-muted-2">Local Shopping Areas</li>
-                                       <?php else: ?>
-                                       <li class="col-12 text-muted-2">Tourist Attractions</li>
-                                       <li class="col-12 text-muted-2">Shopping Centers</li>
-                                       <?php endif; ?>
-                                       <?php endif; ?>
+                                       <?php foreach ($displayAttractions as $attraction): ?>
+                                       <li class="col-12 text-muted-2"><?= esc($attraction) ?></li>
+                                       <?php endforeach; ?>
                                     </ul>
                                  </div>
                               </div>
                            </div>
                         </div>
-                        <div class="col-xl-4 col-lg-4 col-md-4 p-0">
-                           <div class="card p-3 mb-4">
+                        <?php endif; ?>
+                        
+                        <?php if (!empty($displayTransport)): ?>
+                        <div class="<?= $colClass ?> p-1">
+                           <div class="card p-3 mb-4 h-100">
                               <div class="nearestServ-wrap">
                                  <div class="nearestServ-head d-flex mb-1">
                                     <h6 class="fs-6 fw-semibold text-primary mb-1"><i class="fa-solid fa-jet-fighter me-2"></i>Transportation</h6>
                                  </div>
                                  <div class="nearestServ-caps">
                                     <ul class="row align-items-start g-2 p-0 m-0">
-                                       <?php if (!empty($hotel['transportation_info'])): ?>
-                                       <?php
-                                          // Extract plain text transportation info from HTML content
-                                          $transportHtml = $hotel['transportation_info'];
-                                          // Remove HTML tags and get plain text lines
-                                          $transportText = strip_tags($transportHtml);
-                                          $transportInfo = array_filter(explode("\n", $transportText));
-                                          $displayTransport = [];
-
-                                          foreach ($transportInfo as $transport) {
-                                             $transport = trim($transport);
-                                             if (!empty($transport) && !preg_match('/^(Airport|Local|Public|Parking|Accessibility)/i', $transport)) {
-                                                   $displayTransport[] = $transport;
-                                             }
-                                          }
-
-                                          foreach (array_slice($displayTransport, 0, 3) as $transport):
-                                             ?>
-                                                                              <li class="col-12 text-muted-2"><?= esc($transport) ?></li>
-                                                                              <?php
-                                          endforeach;
-                                       ?>
-                                       <?php else: ?>
-                                       <?php if (!empty($hotel['destination_name'])): ?>
-                                       <li class="col-12 text-muted-2">Airport: <?= esc($hotel['destination_name']) ?> Airport</li>
-                                       <li class="col-12 text-muted-2">Metro: <?= esc($hotel['destination_name']) ?> Metro</li>
-                                       <li class="col-12 text-muted-2">Bus: Local Transport Hub</li>
-                                       <?php else: ?>
-                                       <li class="col-12 text-muted-2">Airport: Nearby Airport</li>
-                                       <li class="col-12 text-muted-2">Metro: Local Metro Station</li>
-                                       <li class="col-12 text-muted-2">Bus: Public Transport</li>
-                                       <?php endif; ?>
-                                       <?php endif; ?>
+                                       <?php foreach ($displayTransport as $transport): ?>
+                                       <li class="col-12 text-muted-2"><?= esc($transport) ?></li>
+                                       <?php endforeach; ?>
                                     </ul>
                                  </div>
                               </div>
                            </div>
                         </div>
-                        <div class="col-xl-4 col-lg-4 col-md-4 p-0">
-                           <div class="card p-3 mb-4">
+                        <?php endif; ?>
+                        
+                        <?php if (!empty($displayDining)): ?>
+                        <div class="<?= $colClass ?> p-1">
+                           <div class="card p-3 mb-4 h-100">
                               <div class="nearestServ-wrap">
                                  <div class="nearestServ-head d-flex mb-1">
                                     <h6 class="fs-6 fw-semibold text-primary mb-1"><i class="fa-solid fa-martini-glass-empty me-2"></i>Dining & Entertainment</h6>
                                  </div>
                                  <div class="nearestServ-caps">
                                     <ul class="row align-items-start g-2 p-0 m-0">
-                                       <?php
-                                          $hasRestaurant = !empty($hotel['amenities']) && (stripos($hotel['amenities'], 'restaurant') !== false || stripos($hotel['amenities'], 'dining') !== false);
-                                          $hasBar = !empty($hotel['amenities']) && (stripos($hotel['amenities'], 'bar') !== false || stripos($hotel['amenities'], 'lounge') !== false);
-                                          ?>
-                                       <li class="col-12 text-muted-2">
-                                          <?= $hasRestaurant ? 'On-site Restaurant' : 'Restaurants nearby' ?>
-                                       </li>
-                                       <li class="col-12 text-muted-2">
-                                          <?= $hasBar ? 'Hotel Bar & Lounge' : 'Cafes & Bars nearby' ?>
-                                       </li>
-                                       <li class="col-12 text-muted-2">Entertainment venues</li>
+                                       <?php foreach ($displayDining as $dining): ?>
+                                       <li class="col-12 text-muted-2"><?= esc($dining) ?></li>
+                                       <?php endforeach; ?>
                                     </ul>
                                  </div>
                               </div>
                            </div>
                         </div>
+                        <?php endif; ?>
                      </div>
                   </div>
+                  <?php endif; ?>
                   <!-- Login Alert -->
                   <div class="col-xl-12 col-lg-12 col-md-12 p-0">
                      <div class="d-flex align-items-center justify-content-start py-3 px-3 rounded-2 bg-success mb-4">
                         <p class="text-light fw-semibold m-0"><i class="fa-solid fa-gift text-warning me-2"></i>
-                           <a href="<?= base_url('/quote') ?>" class="text-white text-decoration-underline">Request Quote</a> to get the best deals and personalized offers for your stay.
+                           <a href="<?= base_url('/contact') ?>" class="text-white text-decoration-underline">Request Quote</a> to get the best deals and personalized offers for your stay.
                         </p>
                      </div>
                   </div>
-                  <!-- Hotel Description & Amenities -->
+                  <!-- Hotel Description -->
                   <div class="col-xl-12 col-lg-12 col-md-12 p-0">
                      <div class="card mb-4">
                         <div class="card-header">
                            <h4 class="fs-5 mb-0">About This Hotel</h4>
                         </div>
                         <div class="card-body">
-                           <div class="row align-items-start">
-                              <div class="col-xl-12 col-lg-12 col-md-12 p-0">
-                                 <?php if (!empty($hotel['description'])): ?>
-                                 <div class="text-md text-muted lh-lg mb-4 hotel-description">
-                                    <?= $hotel['description'] ?>
-                                 </div>
-                                 <?php else: ?>
-                                 <p class="text-muted mb-4">Experience comfort and luxury at <?= esc($hotel['name']) ?>. Our hotel offers excellent service and modern amenities for a memorable stay.</p>
-                                 <?php endif; ?>
-                              </div>
+                           <?php if (!empty($hotel['description'])): ?>
+                           <div class="text-md text-muted lh-lg mb-4 hotel-description">
+                              <?= $hotel['description'] ?>
                            </div>
+                           <?php else: ?>
+                           <p class="text-muted mb-4">
+                              Experience comfort and luxury at <?= esc($hotel['name']) ?>.
+                              Our hotel offers excellent service and modern amenities for a memorable stay.
+                           </p>
+                           <?php endif; ?>
                         </div>
                      </div>
                   </div>
@@ -318,55 +308,45 @@
                            <h4 class="fs-5 mb-0">Service & Amenities</h4>
                         </div>
                         <div class="card-body">
-                           <div class="row align-items-start">
+                           <div class="row">
                               <div class="col-xl-2 col-lg-3 col-md-4">
                                  <h5 class="fs-6 fw-semibold mb-0">Hotel Amenities</h5>
                               </div>
                               <div class="col-xl-10 col-lg-9 col-md-8">
-                                 <div class="row align-items-start">
-                                    <div class="col-xl-12 col-lg-12 col-md-12 p-0">
-                                       <?php if (!empty($hotel['amenities'])): ?>
-                                       <ul class="row align-items-center p-0 mb-0">
-                                          <?php
-                                          $amenities = explode(',', $hotel['amenities']);
-                                          foreach ($amenities as $amenity):
-                                             $amenity = trim($amenity);
-                                             if (!empty($amenity)):
-                                                   ?>
-                                          <li class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
-                                             <div class="d-flex align-items-center mb-3">
-                                                <i class="fa-solid fa-check text-success me-2"></i><?= esc($amenity) ?>
-                                             </div>
-                                          </li>
-                                          <?php
-                                             endif;
-                                          endforeach;
-                                          ?>
-                                       </ul>
-                                       <?php else: ?>
-                                       <ul class="row align-items-center p-0 mb-0">
-                                          <li class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
-                                             <div class="d-flex align-items-center mb-3">Free WiFi</div>
-                                          </li>
-                                          <li class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
-                                             <div class="d-flex align-items-center mb-3">Air Conditioning</div>
-                                          </li>
-                                          <li class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
-                                             <div class="d-flex align-items-center mb-3">24-Hour Front Desk</div>
-                                          </li>
-                                          <li class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
-                                             <div class="d-flex align-items-center mb-3">Room Service</div>
-                                          </li>
-                                          <li class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
-                                             <div class="d-flex align-items-center mb-3">Parking<span class="text-success fw-medium ms-3">Free</span></div>
-                                          </li>
-                                          <li class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
-                                             <div class="d-flex align-items-center mb-3">Luggage Storage</div>
-                                          </li>
-                                       </ul>
-                                       <?php endif; ?>
-                                    </div>
-                                 </div>
+                                 <ul class="row align-items-center p-0 mb-0 list-unstyled">
+                                    <?php if (!empty($hotel['amenities'])): ?>
+                                    <?php foreach (explode(',', $hotel['amenities']) as $amenity): ?>
+                                    <?php $amenity = trim($amenity); ?>
+                                    <?php if ($amenity !== ''): ?>
+                                    <li class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
+                                       <div class="d-flex align-items-center mb-3">
+                                          <i class="fa-solid fa-check text-success me-2"></i>
+                                          <?= esc($amenity) ?>
+                                       </div>
+                                    </li>
+                                    <?php endif; ?>
+                                    <?php endforeach; ?>
+                                    <?php else: ?>
+                                    <li class="col-xl-4 col-md-6">
+                                       <div class="mb-3">Free WiFi</div>
+                                    </li>
+                                    <li class="col-xl-4 col-md-6">
+                                       <div class="mb-3">Air Conditioning</div>
+                                    </li>
+                                    <li class="col-xl-4 col-md-6">
+                                       <div class="mb-3">24-Hour Front Desk</div>
+                                    </li>
+                                    <li class="col-xl-4 col-md-6">
+                                       <div class="mb-3">Room Service</div>
+                                    </li>
+                                    <li class="col-xl-4 col-md-6">
+                                       <div class="mb-3">Parking <span class="text-success fw-medium ms-2">Free</span></div>
+                                    </li>
+                                    <li class="col-xl-4 col-md-6">
+                                       <div class="mb-3">Luggage Storage</div>
+                                    </li>
+                                    <?php endif; ?>
+                                 </ul>
                               </div>
                            </div>
                         </div>
@@ -379,13 +359,13 @@
                            <h4 class="fs-5 mb-0">Contact Information</h4>
                         </div>
                         <div class="card-body">
-                           <div class="row align-items-start">
-                              <div class="col-xl-6 col-lg-6 col-md-6">
+                           <div class="row">
+                              <div class="col-md-6">
                                  <?php if (!empty($hotel['contact_phone'])): ?>
                                  <div class="d-flex align-items-center mb-3">
                                     <i class="fa-solid fa-phone text-primary me-3"></i>
                                     <div>
-                                       <div class="text-dark fw-medium">Phone</div>
+                                       <div class="fw-medium">Phone</div>
                                        <div class="text-muted"><?= esc($hotel['contact_phone']) ?></div>
                                     </div>
                                  </div>
@@ -394,19 +374,27 @@
                                  <div class="d-flex align-items-center mb-3">
                                     <i class="fa-solid fa-envelope text-primary me-3"></i>
                                     <div>
-                                       <div class="text-dark fw-medium">Email</div>
+                                       <div class="fw-medium">Email</div>
                                        <div class="text-muted"><?= esc($hotel['contact_email']) ?></div>
                                     </div>
                                  </div>
                                  <?php endif; ?>
                               </div>
-                              <div class="col-xl-6 col-lg-6 col-md-6">
+                              <div class="col-md-6">
                                  <?php if (!empty($hotel['website'])): ?>
+                                 <?php
+                  $website = esc($hotel['website']);
+                  if (!preg_match('#^https?://#', $website)) {
+                     $website = 'https://' . $website;
+                  }
+                  ?>
                                  <div class="d-flex align-items-center mb-3">
                                     <i class="fa-solid fa-globe text-primary me-3"></i>
                                     <div>
-                                       <div class="text-dark fw-medium">Website</div>
-                                       <div class="text-muted"><a href="<?= esc($hotel['website']) ?>" target="_blank" class="text-primary"><?= esc($hotel['website']) ?></a></div>
+                                       <div class="fw-medium">Website</div>
+                                       <a href="<?= $website ?>" target="_blank" class="text-primary">
+                                       <?= $website ?>
+                                       </a>
                                     </div>
                                  </div>
                                  <?php endif; ?>
@@ -414,7 +402,7 @@
                                  <div class="d-flex align-items-center mb-3">
                                     <i class="fa-solid fa-location-dot text-primary me-3"></i>
                                     <div>
-                                       <div class="text-dark fw-medium">Address</div>
+                                       <div class="fw-medium">Address</div>
                                        <div class="text-muted"><?= esc($hotel['address']) ?></div>
                                     </div>
                                  </div>
@@ -632,18 +620,18 @@
                                     <ul class="p-0 row gx-3 gy-2 align-items-start flex-wrap">
                                        <?php if (!empty($relatedHotel['amenities'])): ?>
                                        <?php
-            $amenities = array_slice(explode(',', $relatedHotel['amenities']), 0, 6);
-            foreach ($amenities as $amenity):
-                $amenity = trim($amenity);
-                if (!empty($amenity)):
-                    ?>
-                                       <li class="col-auto text-dark text-md text-muted-2 d-inline-flex align-items-center">
-                                          <i class="fa-solid fa-check text-success me-1"></i><?= esc($amenity) ?>
-                                       </li>
-                                       <?php
-                endif;
-            endforeach;
-?>
+                                                   $amenities = array_slice(explode(',', $relatedHotel['amenities']), 0, 6);
+                                                   foreach ($amenities as $amenity):
+                                                      $amenity = trim($amenity);
+                                                      if (!empty($amenity)):
+                                                         ?>
+                                                                              <li class="col-auto text-dark text-md text-muted-2 d-inline-flex align-items-center">
+                                                                                 <i class="fa-solid fa-check text-success me-1"></i><?= esc($amenity) ?>
+                                                                              </li>
+                                                                              <?php
+                                                      endif;
+                                                   endforeach;
+                                       ?>
                                        <?php else: ?>
                                        <li class="col-auto text-dark text-md text-muted-2 d-inline-flex align-items-center">
                                           <i class="fa-solid fa-check text-success me-1"></i>Free WiFi
@@ -933,76 +921,65 @@
    .cancellation-policy em {
    font-style: italic;
    }
-
    /* Gallery Layout Styles */
    .geotrip-gallery {
-      display: flex;
-      gap: 10px;
-      height: 400px;
+   display: flex;
+   gap: 10px;
+   height: 400px;
    }
-
    .left-img {
-      flex: 2;
-      height: 100%;
+   flex: 2;
+   height: 100%;
    }
-
    .left-img img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 8px;
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+   border-radius: 8px;
    }
-
    .right-grid {
-      flex: 1;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: 1fr 1fr;
-      gap: 10px;
-      height: 100%;
+   flex: 1;
+   display: grid;
+   grid-template-columns: 1fr 1fr;
+   grid-template-rows: 1fr 1fr;
+   gap: 10px;
+   height: 100%;
    }
-
    .right-grid img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
    }
-
    .btn-whites {
-      background-color: rgba(255, 255, 255, 0.9);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
+   background-color: rgba(255, 255, 255, 0.9);
+   border: 1px solid rgba(255, 255, 255, 0.2);
+   backdrop-filter: blur(10px);
    }
-
    .btn-whites:hover {
-      background-color: rgba(255, 255, 255, 1);
+   background-color: rgba(255, 255, 255, 1);
    }
-
    /* Responsive adjustments for gallery */
    @media (max-width: 768px) {
-      .geotrip-gallery {
-         flex-direction: column;
-         height: auto;
-      }
-      
-      .left-img {
-         height: 250px;
-         margin-bottom: 10px;
-      }
-      
-      .right-grid {
-         height: 200px;
-         grid-template-columns: 1fr 1fr;
-         grid-template-rows: 1fr;
-      }
+   .geotrip-gallery {
+   flex-direction: column;
+   height: auto;
    }
-
+   .left-img {
+   height: 250px;
+   margin-bottom: 10px;
+   }
+   .right-grid {
+   height: 200px;
+   grid-template-columns: 1fr 1fr;
+   grid-template-rows: 1fr;
+   }
+   }
    @media (max-width: 576px) {
-      .right-grid {
-         grid-template-columns: 1fr;
-         grid-template-rows: 1fr 1fr;
-         height: 250px;
-      }
+   .right-grid {
+   grid-template-columns: 1fr;
+   grid-template-rows: 1fr 1fr;
+   height: 250px;
+   }
    }
 </style>
 <?php include APPPATH . 'Views/layouts/public_footer.php'; ?>

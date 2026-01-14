@@ -35,6 +35,136 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
                         <div>
+                            <p class="mb-2 card-title">Total Visitors</p>
+                            <h4 class="fw-bold text-primary mb-0"><?= number_format($visitor_stats['total_visits']) ?></h4>
+                            <small class="text-muted">Last 30 days</small>
+                        </div>
+                        <div>
+                            <i data-lucide="users" class="fs-32 text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <p class="mb-2 card-title">Unique Visitors</p>
+                            <h4 class="fw-bold text-info mb-0"><?= number_format($visitor_stats['unique_visitors']) ?></h4>
+                            <small class="text-muted">Unique IPs</small>
+                        </div>
+                        <div>
+                            <i data-lucide="user-check" class="fs-32 text-info"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <p class="mb-2 card-title">Mobile Visits</p>
+                            <h4 class="fw-bold text-success mb-0"><?= number_format($visitor_stats['mobile_visits']) ?></h4>
+                            <small class="text-muted"><?= $visitor_stats['total_visits'] > 0 ? round(($visitor_stats['mobile_visits'] / $visitor_stats['total_visits']) * 100, 1) : 0 ?>% of total</small>
+                        </div>
+                        <div>
+                            <i data-lucide="smartphone" class="fs-32 text-success"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <p class="mb-2 card-title">Desktop Visits</p>
+                            <h4 class="fw-bold text-warning mb-0"><?= number_format($visitor_stats['desktop_visits']) ?></h4>
+                            <small class="text-muted"><?= $visitor_stats['total_visits'] > 0 ? round(($visitor_stats['desktop_visits'] / $visitor_stats['total_visits']) * 100, 1) : 0 ?>% of total</small>
+                        </div>
+                        <div>
+                            <i data-lucide="monitor" class="fs-32 text-warning"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Visitor Analytics Chart -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="card-title mb-0">📈 Visitor Analytics</h4>
+                    <div>
+                        <select id="analyticsFilter" class="form-select form-select-sm">
+                            <option value="7">Last 7 Days</option>
+                            <option value="30" selected>Last 30 Days</option>
+                            <option value="60">Last 60 Days</option>
+                            <option value="90">Last 90 Days</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="visitorChart" style="height: 250px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Visitor Details -->
+    <div class="row">
+        <div class="col-xl-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">🔝 Top Pages</h4>
+                </div>
+                <div class="card-body">
+                    <div id="topPagesContent">
+                        <div class="text-center py-4">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">🌐 Browser & Platform Stats</h4>
+                </div>
+                <div class="card-body">
+                    <div id="browserPlatformContent">
+                        <div class="text-center py-4">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats Cards -->
+    <div class="row">
+        <div class="col-xl-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
                             <p class="mb-2 card-title">Total Content</p>
                             <h4 class="fw-bold text-primary mb-0"><?= $quick_stats['total_content'] ?></h4>
                             <small class="text-muted">Blog Posts</small>
@@ -259,7 +389,7 @@
                     <?php if (!empty($recent_activities)): ?>
                         <div class="table-responsive">
                             <table class="table table-hover">
-                                <thead>
+                                <thead class="table-light">
                                     <tr>
                                         <th>Type</th>
                                         <th>Title</th>
@@ -274,7 +404,26 @@
                                             <td>
                                                 <span class="badge badge-soft-<?= 
                                                     $activity['type'] === 'blog' ? 'primary' : 
-                                                    ($activity['type'] === 'itinerary' ? 'info' : 'warning') ?>">
+                                                    ($activity['type'] === 'booking' ? 'success' :
+                                                    ($activity['type'] === 'hotel' ? 'info' :
+                                                    ($activity['type'] === 'destination' ? 'purple' :
+                                                    ($activity['type'] === 'itinerary' ? 'cyan' : 
+                                                    ($activity['type'] === 'testimonial' ? 'warning' :
+                                                    ($activity['type'] === 'contact' ? 'secondary' :
+                                                    ($activity['type'] === 'payment' ? 'success' : 'dark'))))))) ?>">
+                                                    <?php
+                                                    $icons = [
+                                                        'blog' => '📝',
+                                                        'booking' => '📅',
+                                                        'hotel' => '🏨',
+                                                        'destination' => '🌍',
+                                                        'itinerary' => '🗺️',
+                                                        'testimonial' => '⭐',
+                                                        'contact' => '✉️',
+                                                        'payment' => '💳'
+                                                    ];
+                                                    echo $icons[$activity['type']] ?? '📌';
+                                                    ?>
                                                     <?= ucfirst($activity['type']) ?>
                                                 </span>
                                             </td>
@@ -282,8 +431,9 @@
                                             <td><?= ucfirst($activity['action']) ?></td>
                                             <td>
                                                 <span class="badge badge-soft-<?= 
-                                                    $activity['status'] === 'published' || $activity['status'] === 'approved' ? 'success' : 
-                                                    ($activity['status'] === 'pending' ? 'warning' : 'secondary') ?>">
+                                                    in_array($activity['status'], ['published', 'approved', 'active', 'confirmed', 'completed', 'paid']) ? 'success' : 
+                                                    (in_array($activity['status'], ['pending', 'new']) ? 'warning' : 
+                                                    (in_array($activity['status'], ['draft', 'inactive']) ? 'secondary' : 'danger')) ?>">
                                                     <?= ucfirst($activity['status']) ?>
                                                 </span>
                                             </td>
@@ -304,5 +454,190 @@
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let visitorChart = null;
+    
+    // Load initial analytics
+    loadVisitorAnalytics(30);
+    
+    // Filter change handler
+    document.getElementById('analyticsFilter').addEventListener('change', function() {
+        loadVisitorAnalytics(this.value);
+    });
+    
+    function loadVisitorAnalytics(days) {
+        // Show loading state
+        document.getElementById('topPagesContent').innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>';
+        document.getElementById('browserPlatformContent').innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>';
+        
+        fetch('<?= base_url('/admin/dashboard/visitor-analytics') ?>?days=' + days)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Analytics data:', data); // Debug log
+                
+                // Update chart
+                updateVisitorChart(data.trends || []);
+                
+                // Update top pages
+                updateTopPages(data.topPages || []);
+                
+                // Update browser/platform stats
+                updateBrowserPlatformStats(data.browserStats || [], data.platformStats || []);
+            })
+            .catch(error => {
+                console.error('Error loading analytics:', error);
+                document.getElementById('visitorChart').innerHTML = '<div class="alert alert-danger">Error loading analytics data. Please try again.</div>';
+                document.getElementById('topPagesContent').innerHTML = '<div class="alert alert-danger">Error loading data</div>';
+                document.getElementById('browserPlatformContent').innerHTML = '<div class="alert alert-danger">Error loading data</div>';
+            });
+    }
+    
+    function updateVisitorChart(trends) {
+        // Handle empty or undefined data
+        if (!trends || trends.length === 0) {
+            document.getElementById('visitorChart').innerHTML = '<div class="text-center py-5 text-muted">No visitor data available for this period</div>';
+            return;
+        }
+        
+        const dates = trends.map(item => item.date);
+        const visits = trends.map(item => parseInt(item.visits));
+        
+        const options = {
+            series: [{
+                name: 'Visits',
+                data: visits
+            }],
+            chart: {
+                type: 'area',
+                height: 350,
+                toolbar: {
+                    show: false
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'smooth',
+                width: 2
+            },
+            xaxis: {
+                categories: dates,
+                labels: {
+                    formatter: function(value) {
+                        const date = new Date(value);
+                        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    }
+                }
+            },
+            yaxis: {
+                labels: {
+                    formatter: function(value) {
+                        return Math.round(value);
+                    }
+                }
+            },
+            colors: ['#3b7ddd'],
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shadeIntensity: 1,
+                    opacityFrom: 0.7,
+                    opacityTo: 0.3,
+                }
+            },
+            tooltip: {
+                x: {
+                    format: 'dd MMM yyyy'
+                }
+            }
+        };
+        
+        if (visitorChart) {
+            visitorChart.destroy();
+        }
+        
+        visitorChart = new ApexCharts(document.querySelector("#visitorChart"), options);
+        visitorChart.render();
+    }
+    
+    function updateTopPages(topPages) {
+        let html = '';
+        
+        if (topPages.length === 0) {
+            html = '<div class="text-center py-4 text-muted">No data available</div>';
+        } else {
+            html = '<div class="table-responsive"><table class="table table-sm table-hover mb-0">';
+            html += '<thead class="table-light"><tr><th>Page</th><th class="text-end">Visits</th></tr></thead><tbody>';
+            
+            topPages.forEach(page => {
+                const title = page.page_title || page.page_url;
+                const shortTitle = title.length > 50 ? title.substring(0, 50) + '...' : title;
+                html += `<tr>
+                    <td><small>${escapeHtml(shortTitle)}</small></td>
+                    <td class="text-end"><span class="badge bg-primary-subtle text-primary">${page.visit_count}</span></td>
+                </tr>`;
+            });
+            
+            html += '</tbody></table></div>';
+        }
+        
+        document.getElementById('topPagesContent').innerHTML = html;
+    }
+    
+    function updateBrowserPlatformStats(browserStats, platformStats) {
+        let html = '<div class="row">';
+        
+        // Browser stats
+        html += '<div class="col-md-6"><h6 class="fw-semibold mb-3">Browsers</h6>';
+        if (browserStats.length === 0) {
+            html += '<p class="text-muted">No data</p>';
+        } else {
+            browserStats.slice(0, 5).forEach(browser => {
+                html += `<div class="d-flex justify-content-between mb-2">
+                    <span>${escapeHtml(browser.browser)}</span>
+                    <span class="badge bg-info-subtle text-info">${browser.count}</span>
+                </div>`;
+            });
+        }
+        html += '</div>';
+        
+        // Platform stats
+        html += '<div class="col-md-6"><h6 class="fw-semibold mb-3">Platforms</h6>';
+        if (platformStats.length === 0) {
+            html += '<p class="text-muted">No data</p>';
+        } else {
+            platformStats.slice(0, 5).forEach(platform => {
+                html += `<div class="d-flex justify-content-between mb-2">
+                    <span>${escapeHtml(platform.platform)}</span>
+                    <span class="badge bg-success-subtle text-success">${platform.count}</span>
+                </div>`;
+            });
+        }
+        html += '</div></div>';
+        
+        document.getElementById('browserPlatformContent').innerHTML = html;
+    }
+    
+    function escapeHtml(text) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, m => map[m]);
+    }
+});
+</script>
 
 <?= $this->include('layouts/dashboard_footer') ?>

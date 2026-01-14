@@ -147,14 +147,23 @@
 
                         <div class="mb-3">
                             <label for="nearby_attractions" class="form-label">Nearby Attractions</label>
-                            <div id="quill-nearby-attractions" style="height: 200px;"></div>
-                            <textarea name="nearby_attractions" id="nearby_attractions" style="display: none;"><?= old('nearby_attractions', $hotel['nearby_attractions'] ?? '') ?></textarea>
+                            <textarea class="form-control" id="nearby_attractions" name="nearby_attractions" rows="4" 
+                                      placeholder="Enter nearby attractions (one per line or separated by commas)"><?= old('nearby_attractions', $hotel['nearby_attractions'] ?? '') ?></textarea>
+                            <div class="form-text">List popular attractions near the hotel</div>
                         </div>
 
                         <div class="mb-3">
                             <label for="transportation_info" class="form-label">Transportation Information</label>
-                            <div id="quill-transportation-info" style="height: 200px;"></div>
-                            <textarea name="transportation_info" id="transportation_info" style="display: none;"><?= old('transportation_info', $hotel['transportation_info'] ?? '') ?></textarea>
+                            <textarea class="form-control" id="transportation_info" name="transportation_info" rows="4" 
+                                      placeholder="Enter transportation details (one per line or separated by commas)"><?= old('transportation_info', $hotel['transportation_info'] ?? '') ?></textarea>
+                            <div class="form-text">Provide information about nearby transportation options</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="dining_entertainment" class="form-label">Dining & Entertainment</label>
+                            <textarea class="form-control" id="dining_entertainment" name="dining_entertainment" rows="4" 
+                                      placeholder="Enter dining and entertainment options (one per line or separated by commas)"><?= old('dining_entertainment', $hotel['dining_entertainment'] ?? '') ?></textarea>
+                            <div class="form-text">List restaurants, bars, entertainment venues, etc.</div>
                         </div>
                     </div>
                 </div>
@@ -228,6 +237,53 @@
                             <label for="price_per_night" class="form-label">Price per Night (₹) <span class="text-danger">*</span></label>
                             <input type="number" step="0.01" class="form-control" id="price_per_night" 
                                    name="price_per_night" value="<?= old('price_per_night', $hotel['price_per_night']) ?>" required>
+                        </div>
+
+                        <!-- Discount Section -->
+                        <div class="card bg-light mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title mb-3">Discount Settings</h6>
+                                
+                                <div class="mb-3">
+                                    <label for="discount_type" class="form-label">Discount Type</label>
+                                    <select class="form-select" id="discount_type" name="discount_type">
+                                        <option value="none" <?= old('discount_type', $hotel['discount_type'] ?? 'none') == 'none' ? 'selected' : '' ?>>No Discount</option>
+                                        <option value="percentage" <?= old('discount_type', $hotel['discount_type'] ?? 'none') == 'percentage' ? 'selected' : '' ?>>Percentage (%)</option>
+                                        <option value="fixed" <?= old('discount_type', $hotel['discount_type'] ?? 'none') == 'fixed' ? 'selected' : '' ?>>Fixed Amount (₹)</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3" id="discount_value_group" style="display: none;">
+                                    <label for="discount_value" class="form-label">
+                                        <span id="discount_value_label">Discount Value</span>
+                                    </label>
+                                    <input type="number" step="0.01" class="form-control" id="discount_value" 
+                                           name="discount_value" value="<?= old('discount_value', $hotel['discount_value'] ?? 0) ?>" min="0">
+                                    <div class="form-text" id="discount_help_text">Enter discount value</div>
+                                </div>
+
+                                <div class="row" id="discount_dates_group" style="display: none;">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="discount_start_date" class="form-label">Start Date</label>
+                                            <input type="date" class="form-control" id="discount_start_date" 
+                                                   name="discount_start_date" value="<?= old('discount_start_date', $hotel['discount_start_date'] ?? '') ?>">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="discount_end_date" class="form-label">End Date</label>
+                                            <input type="date" class="form-control" id="discount_end_date" 
+                                                   name="discount_end_date" value="<?= old('discount_end_date', $hotel['discount_end_date'] ?? '') ?>">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="discount_preview" class="alert alert-info" style="display: none;">
+                                    <strong>Preview:</strong>
+                                    <div id="discount_preview_text"></div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="mb-3">
@@ -434,32 +490,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     ['clean']
                 ]
             }
-        }),
-        nearbyAttractions: new Quill('#quill-nearby-attractions', {
-            theme: 'snow',
-            modules: {
-                toolbar: [
-                    [{ 'header': [1, 2, 3, 4, false] }],
-                    ['bold', 'italic', 'underline'],
-                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                    [{ 'indent': '-1'}, { 'indent': '+1' }],
-                    [{ 'color': [] }],
-                    ['clean']
-                ]
-            }
-        }),
-        transportationInfo: new Quill('#quill-transportation-info', {
-            theme: 'snow',
-            modules: {
-                toolbar: [
-                    [{ 'header': [1, 2, 3, 4, false] }],
-                    ['bold', 'italic', 'underline'],
-                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                    [{ 'indent': '-1'}, { 'indent': '+1' }],
-                    [{ 'color': [] }],
-                    ['clean']
-                ]
-            }
         })
     };
 
@@ -467,9 +497,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const existingContent = {
         description: document.getElementById('description').value,
         cancellationPolicy: document.getElementById('cancellation_policy').value,
-        hotelPolicies: document.getElementById('hotel_policies').value,
-        nearbyAttractions: document.getElementById('nearby_attractions').value,
-        transportationInfo: document.getElementById('transportation_info').value
+        hotelPolicies: document.getElementById('hotel_policies').value
     };
 
     Object.keys(existingContent).forEach(key => {
@@ -484,8 +512,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('description').value = editors.description.root.innerHTML;
         document.getElementById('cancellation_policy').value = editors.cancellationPolicy.root.innerHTML;
         document.getElementById('hotel_policies').value = editors.hotelPolicies.root.innerHTML;
-        document.getElementById('nearby_attractions').value = editors.nearbyAttractions.root.innerHTML;
-        document.getElementById('transportation_info').value = editors.transportationInfo.root.innerHTML;
     });
 
     // Featured image preview
@@ -687,6 +713,78 @@ document.addEventListener('DOMContentLoaded', function() {
         metaKeywordsInput.addEventListener('input', updateKeywordCount);
         updateKeywordCount(); // Initial count
     }
+
+    // Discount handling
+    const discountType = document.getElementById('discount_type');
+    const discountValueGroup = document.getElementById('discount_value_group');
+    const discountDatesGroup = document.getElementById('discount_dates_group');
+    const discountValue = document.getElementById('discount_value');
+    const discountValueLabel = document.getElementById('discount_value_label');
+    const discountHelpText = document.getElementById('discount_help_text');
+    const discountPreview = document.getElementById('discount_preview');
+    const discountPreviewText = document.getElementById('discount_preview_text');
+    const pricePerNight = document.getElementById('price_per_night');
+
+    function updateDiscountFields() {
+        const type = discountType.value;
+        
+        if (type === 'none') {
+            discountValueGroup.style.display = 'none';
+            discountDatesGroup.style.display = 'none';
+            discountPreview.style.display = 'none';
+        } else {
+            discountValueGroup.style.display = 'block';
+            discountDatesGroup.style.display = 'block';
+            
+            if (type === 'percentage') {
+                discountValueLabel.textContent = 'Discount Percentage (%)';
+                discountHelpText.textContent = 'Enter percentage (e.g., 15 for 15% off)';
+                discountValue.max = 100;
+            } else if (type === 'fixed') {
+                discountValueLabel.textContent = 'Discount Amount (₹)';
+                discountHelpText.textContent = 'Enter fixed discount amount in rupees';
+                discountValue.removeAttribute('max');
+            }
+            
+            updateDiscountPreview();
+        }
+    }
+
+    function updateDiscountPreview() {
+        const type = discountType.value;
+        const value = parseFloat(discountValue.value) || 0;
+        const price = parseFloat(pricePerNight.value) || 0;
+        
+        if (type === 'none' || value <= 0 || price <= 0) {
+            discountPreview.style.display = 'none';
+            return;
+        }
+        
+        let discountAmount = 0;
+        let finalPrice = price;
+        let previewText = '';
+        
+        if (type === 'percentage') {
+            discountAmount = (price * value) / 100;
+            finalPrice = price - discountAmount;
+            previewText = `Original Price: ₹${price.toFixed(2)} | Discount: ${value}% (₹${discountAmount.toFixed(2)}) | Final Price: ₹${finalPrice.toFixed(2)}`;
+        } else if (type === 'fixed') {
+            discountAmount = Math.min(value, price);
+            finalPrice = price - discountAmount;
+            const percentage = ((discountAmount / price) * 100).toFixed(1);
+            previewText = `Original Price: ₹${price.toFixed(2)} | Discount: ₹${discountAmount.toFixed(2)} (${percentage}%) | Final Price: ₹${finalPrice.toFixed(2)}`;
+        }
+        
+        discountPreviewText.textContent = previewText;
+        discountPreview.style.display = 'block';
+    }
+
+    discountType.addEventListener('change', updateDiscountFields);
+    discountValue.addEventListener('input', updateDiscountPreview);
+    pricePerNight.addEventListener('input', updateDiscountPreview);
+    
+    // Initialize on page load
+    updateDiscountFields();
 });
 </script>
 

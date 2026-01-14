@@ -168,6 +168,7 @@
                <!-- Bulk Actions -->
                <?php if (!empty($videos)): ?>
                <form id="bulkForm" method="post" action="<?= base_url('/admin/videos/bulk-action') ?>">
+                  <?= csrf_field() ?>
                   <div class="row mb-3">
                      <div class="col-md-6">
                         <div class="d-flex align-items-center">

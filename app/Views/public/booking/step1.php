@@ -259,22 +259,35 @@
                                 <h5 class="fw-semibold fs-6">Your Price Summary</h5>
                                 <ul class="list-group list-group-borderless">
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <span class="fw-medium mb-0">Rooms & Stay (<?= $nights ?> nights)</span>
+                                        <span class="fw-medium mb-0">Price per Night</span>
+                                        <span class="fw-semibold">₹<?= number_format($pricePerNight, 2) ?></span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span class="fw-medium mb-0">Rooms & Stay (<?= $nights ?> nights × <?= $rooms ?> room<?= $rooms > 1 ? 's' : '' ?>)</span>
                                         <span class="fw-semibold">₹<?= number_format($basePrice, 2) ?></span>
                                     </li>
-                                    <?php if ($discount > 0): ?>
+                                    <?php if ($discountInfo['has_discount']): ?>
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <span class="fw-medium mb-0">Total Discount<span class="badge rounded-1 text-bg-danger smaller mb-0 ms-2">15% off</span></span>
-                                        <span class="fw-semibold">-₹<?= number_format($discount, 2) ?></span>
+                                        <span class="fw-medium mb-0">
+                                            Hotel Discount
+                                            <span class="badge rounded-1 text-bg-danger smaller mb-0 ms-2">
+                                                <?php if ($discountInfo['discount_type'] === 'percentage'): ?>
+                                                    <?= number_format($discountInfo['discount_percentage'], 0) ?>% off
+                                                <?php else: ?>
+                                                    ₹<?= number_format($hotel['discount_value'], 0) ?> off per night
+                                                <?php endif; ?>
+                                            </span>
+                                        </span>
+                                        <span class="fw-semibold text-success">-₹<?= number_format($discount, 2) ?></span>
                                     </li>
                                     <?php endif; ?>
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
                                         <span class="fw-medium mb-0">8% Taxes & Fees</span>
                                         <span class="fw-semibold">₹<?= number_format($taxes, 2) ?></span>
                                     </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <span class="fw-medium text-success mb-0">Total Price</span>
-                                        <span class="fw-semibold text-success">₹<?= number_format($totalPrice, 2) ?></span>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center border-top pt-3">
+                                        <span class="fw-bold text-success mb-0 fs-5">Total Price</span>
+                                        <span class="fw-bold text-success fs-5">₹<?= number_format($totalPrice, 2) ?></span>
                                     </li>
                                 </ul>
                             </div>

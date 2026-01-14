@@ -54,6 +54,7 @@ $routes->post('/admin/login', 'AuthController::loginPost');
 // Admin Routes
 $routes->group('admin', ['filter' => 'role:admin'], function($routes) {
     $routes->get('dashboard', 'Admin\DashboardController::index');
+    $routes->get('dashboard/visitor-analytics', 'Admin\DashboardController::getVisitorAnalytics');
     $routes->get('users', 'AdminController::users');
     $routes->get('users/toggle/(:num)', 'AdminController::toggleUserStatus/$1');
     
@@ -285,9 +286,10 @@ $routes->group('admin', ['filter' => 'role:admin'], function($routes) {
     
     // Booking Management
     $routes->get('bookings', 'Admin\BookingController::index');
+    $routes->get('bookings/(:num)', 'Admin\BookingController::show/$1');
     $routes->get('bookings/show/(:num)', 'Admin\BookingController::show/$1');
-    $routes->post('bookings/update-status/(:num)', 'Admin\BookingController::updateStatus/$1');
-    $routes->post('bookings/update-payment-status/(:num)', 'Admin\BookingController::updatePaymentStatus/$1');
+    $routes->post('bookings/(:num)/update-status', 'Admin\BookingController::updateStatus/$1');
+    $routes->post('bookings/(:num)/update-payment-status', 'Admin\BookingController::updatePaymentStatus/$1');
     
     // Contact Management
     $routes->get('contacts', 'Admin\ContactController::index');

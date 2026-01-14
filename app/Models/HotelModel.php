@@ -23,10 +23,11 @@ class HotelModel extends Model
     protected $allowedFields    = [
         'name', 'slug', 'description', 'short_description', 'featured_image',
         'destination_id', 'address', 'latitude', 'longitude', 'star_rating',
-        'price_per_night', 'amenities', 'contact_phone', 'contact_email',
+        'price_per_night', 'discount_type', 'discount_value', 'discount_start_date', 'discount_end_date',
+        'amenities', 'contact_phone', 'contact_email',
         'website', 'is_featured', 'status', 'sort_order', 'meta_title', 'meta_description', 'meta_keywords',
         'check_in_time', 'check_out_time', 'cancellation_policy', 'hotel_policies',
-        'nearby_attractions', 'transportation_info'
+        'nearby_attractions', 'transportation_info', 'dining_entertainment'
     ];
 
     // Dates
@@ -425,5 +426,76 @@ class HotelModel extends Model
 
         sort($amenities);
         return $amenities;
+    }
+
+    /**
+     * Calculate discounted price for a hotel
+     * 
+     * @param array $hotel Hotel data array
+     * @return array Array with 'original_price', 'discount_amount', 'final_price', 'has_discount', 'discount_percentage'
+     */
+    public function calculateDiscountedPrice(array $hotel): array
+    {
+        $originalPrice = (float) ($hotel['price_per_night'] ?? 0);
+        $discountType = $hotel['discount_type'] ?? 'none';
+        $discountValue = (float) ($hotel['discount_value'] ?? 0);
+        $discountStartDate = $hotel['discount_start_date'] ?? null;
+        $discountEndDate = $hotel['discount_end_date'] ?? null;
+        
+        $result = [
+            'original_price' => $originalPrice,
+            'discount_amount' => 0,
+            'final_price' => $originalPrice,
+            'has_discount' => false,
+            'discount_percentage' => 0,
+            'discount_type' => $discountType
+        ];
+        
+        // Check if discount is active
+        if ($discountType === 'none' || $discountValue <= 0) {
+            return $result;
+        }
+        
+        // Check date validity
+        $today = date('Y-m-d');
+        if ($discountStartDate && $today < $discountStartDate) {
+            return $result;
+        }
+        if ($discountEndDate && $today > $discountEndDate) {
+            return $result;
+        }
+        
+        // Calculate discount
+        $discountAmount = 0;
+        if ($discountType === 'percentage') {
+            $discountAmount = ($originalPrice * $discountValue) / 100;
+            $result['discount_percentage'] = $discountValue;
+        } elseif ($discountType === 'fixed') {
+            $discountAmount = min($discountValue, $originalPrice); // Don't exceed original price
+            $result['discount_percentage'] = ($discountAmount / $originalPrice) * 100;
+        }
+        
+        $result['discount_amount'] = $discountAmount;
+        $result['final_price'] = max(0, $originalPrice - $discountAmount);
+        $result['has_discount'] = true;
+        
+        return $result;
+    }
+
+    /**
+     * Get hotel with calculated discount
+     * 
+     * @param int $id Hotel ID
+     * @return array|null
+     */
+    public function getHotelWithDiscount(int $id): ?array
+    {
+        $hotel = $this->find($id);
+        if (!$hotel) {
+            return null;
+        }
+        
+        $discountInfo = $this->calculateDiscountedPrice($hotel);
+        return array_merge($hotel, $discountInfo);
     }
 }

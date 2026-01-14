@@ -28,6 +28,7 @@ abstract class BaseController extends Controller
     protected $session;
     protected $helpers = ['form', 'url'];
     protected $commonData = [];
+    protected $visitorTracker;
 
     /**
      * @return void
@@ -42,6 +43,9 @@ abstract class BaseController extends Controller
 
         // Preload any models, libraries, etc, here.
         $this->session = service('session');
+        
+        // Initialize visitor tracker
+        $this->visitorTracker = new \App\Libraries\VisitorTracker();
         
         // Set common view data for all public pages
         $this->setCommonViewData();
@@ -77,6 +81,17 @@ abstract class BaseController extends Controller
         } catch (\Exception $e) {
             // Log the error but don't break the page
             log_message('error', 'Failed to load navigation data: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Track page visit
+     * Call this method in your controller actions to track visits
+     */
+    protected function trackVisit($pageTitle = null)
+    {
+        if ($this->visitorTracker) {
+            $this->visitorTracker->track($pageTitle);
         }
     }
 }

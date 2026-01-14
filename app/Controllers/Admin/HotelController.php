@@ -167,6 +167,10 @@ class HotelController extends BaseController
             'longitude' => $this->request->getPost('longitude') ?: null,
             'star_rating' => $this->request->getPost('star_rating'),
             'price_per_night' => $this->request->getPost('price_per_night'),
+            'discount_type' => $this->request->getPost('discount_type') ?: 'none',
+            'discount_value' => $this->request->getPost('discount_value') ?: 0,
+            'discount_start_date' => $this->request->getPost('discount_start_date') ?: null,
+            'discount_end_date' => $this->request->getPost('discount_end_date') ?: null,
             'amenities' => $this->request->getPost('amenities'),
             'contact_phone' => $this->request->getPost('contact_phone'),
             'contact_email' => $this->request->getPost('contact_email'),
@@ -181,8 +185,9 @@ class HotelController extends BaseController
             'check_out_time' => $this->request->getPost('check_out_time') ?: '12:00 PM',
             'cancellation_policy' => $this->sanitizeHtml($this->request->getPost('cancellation_policy')),
             'hotel_policies' => $this->sanitizeHtml($this->request->getPost('hotel_policies')),
-            'nearby_attractions' => $this->sanitizeHtml($this->request->getPost('nearby_attractions')),
-            'transportation_info' => $this->sanitizeHtml($this->request->getPost('transportation_info')),
+            'nearby_attractions' => $this->request->getPost('nearby_attractions'),
+            'transportation_info' => $this->request->getPost('transportation_info'),
+            'dining_entertainment' => $this->request->getPost('dining_entertainment'),
             'created_at' => date('Y-m-d H:i:s')
         ];
 
@@ -465,6 +470,10 @@ class HotelController extends BaseController
             'longitude' => $this->request->getPost('longitude') ?: null,
             'star_rating' => $this->request->getPost('star_rating'),
             'price_per_night' => $this->request->getPost('price_per_night'),
+            'discount_type' => $this->request->getPost('discount_type') ?: 'none',
+            'discount_value' => $this->request->getPost('discount_value') ?: 0,
+            'discount_start_date' => $this->request->getPost('discount_start_date') ?: null,
+            'discount_end_date' => $this->request->getPost('discount_end_date') ?: null,
             'amenities' => $this->request->getPost('amenities'),
             'contact_phone' => $this->request->getPost('contact_phone'),
             'contact_email' => $this->request->getPost('contact_email'),
@@ -479,8 +488,9 @@ class HotelController extends BaseController
             'check_out_time' => $this->request->getPost('check_out_time') ?: '12:00 PM',
             'cancellation_policy' => $this->sanitizeHtml($this->request->getPost('cancellation_policy')),
             'hotel_policies' => $this->sanitizeHtml($this->request->getPost('hotel_policies')),
-            'nearby_attractions' => $this->sanitizeHtml($this->request->getPost('nearby_attractions')),
-            'transportation_info' => $this->sanitizeHtml($this->request->getPost('transportation_info')),
+            'nearby_attractions' => $this->request->getPost('nearby_attractions'),
+            'transportation_info' => $this->request->getPost('transportation_info'),
+            'dining_entertainment' => $this->request->getPost('dining_entertainment'),
             'updated_at' => date('Y-m-d H:i:s')
         ];
 

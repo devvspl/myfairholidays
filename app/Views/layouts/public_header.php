@@ -35,7 +35,7 @@
       <div id="main-wrapper">
       <div class="top-bar">
          <div class="info-side">
-            <span><i class="fas fa-envelope"></i>info@myfairholidays.com</span>
+            <span><i class="fas fa-envelope"></i><a href="mailto:info@myfairholidays.com" style="color: inherit; text-decoration: none;">info@myfairholidays.com</a></span>
             <span><i class="fas fa-map-marker-alt"></i>Gaur City Center, Greater Noida Uttar Pradesh 201307</span>
          </div>
          <div class="social-side">
@@ -47,7 +47,7 @@
       </div>
       <header class="mfh-header">
          <div class="mfh-container">
-            <a href="#" class="mfh-logo">
+            <a href="<?php echo base_url(); ?>" class="mfh-logo">
             <img src="<?php echo base_url(); ?>main/images/logo.png" alt="My Fair Holidays">
             </a>
             <div class="mfh-hamburger" id="mfhHamburger">
@@ -60,16 +60,16 @@
                <ul class="mfh-menu">
                   <li><a href="<?= base_url('/') ?>">Home</a></li>
                   <li><a href="<?= base_url('/about') ?>">About Us</a></li>
-                  <?php if (!empty($destinationTypes)): ?>
+                  <?php if (!empty($destinationTypes) && is_array($destinationTypes)): ?>
                      <?php foreach ($destinationTypes as $type): ?>
                         <li class="mfh-dropdown">
-                           <a href="<?= base_url('/destinations/type/' . $type['slug']) ?>">
+                           <a href="<?= base_url('/hotels?destination_type=' . strtolower($type['name'])) ?>">
                               <?= esc($type['name']) ?> <span class="mfh-arrow"></span>
                            </a>
-                           <?php if (!empty($type['destinations'])): ?>
+                           <?php if (!empty($type['destinations']) && is_array($type['destinations'])): ?>
                               <ul>
                                  <?php foreach ($type['destinations'] as $destination): ?>
-                                    <li><a href="<?= base_url('/destinations/' . $destination['slug']) ?>"><?= esc($destination['name']) ?></a></li>
+                                    <li><a href="<?= base_url('/hotels?search=&destination_id=' . $destination['id']) ?>"><?= esc($destination['name']) ?></a></li>
                                  <?php endforeach; ?>
                               </ul>
                            <?php endif; ?>

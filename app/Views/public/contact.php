@@ -50,7 +50,7 @@ if (!empty($heroSection)) {
                            // If contact_value contains phone numbers but no link, make them clickable
                            $contactValue = $section['contact_value'];
                            if ($section['contact_type'] === 'phone') {
-                               // Pattern to match phone numbers (various formats)
+                               // Pattern to match phone numbers (various formats including international)
                                $phonePattern = '/(\+?\d{1,4}[-.\s]?\(?\d{1,4}\)?[-.\s]?\d{1,4}[-.\s]?\d{1,9})/';
                                $contactValue = preg_replace_callback($phonePattern, function($matches) {
                                    $phone = $matches[1];
@@ -59,23 +59,52 @@ if (!empty($heroSection)) {
                                    return '<a href="tel:' . $cleanPhone . '" class="text-primary text-decoration-none">' . $phone . '</a>';
                                }, $contactValue);
                                echo $contactValue;
+                           } elseif ($section['contact_type'] === 'email') {
+                               // Make emails clickable
+                               $emailPattern = '/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/';
+                               $contactValue = preg_replace_callback($emailPattern, function($matches) {
+                                   $email = $matches[1];
+                                   return '<a href="mailto:' . $email . '" class="text-primary text-decoration-none">' . $email . '</a>';
+                               }, $contactValue);
+                               echo $contactValue;
                            } else {
-                               echo esc($contactValue);
+                               // For other types, still check for phone numbers and emails
+                               $value = $contactValue;
+                               // Make phone numbers clickable
+                               $phonePattern = '/(\+?\d{1,4}[-.\s]?\(?\d{1,4}\)?[-.\s]?\d{1,4}[-.\s]?\d{1,9})/';
+                               $value = preg_replace_callback($phonePattern, function($matches) {
+                                   $phone = $matches[1];
+                                   $cleanPhone = preg_replace('/[^\d+]/', '', $phone);
+                                   return '<a href="tel:' . $cleanPhone . '" class="text-primary text-decoration-none">' . $phone . '</a>';
+                               }, $value);
+                               // Make emails clickable
+                               $emailPattern = '/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/';
+                               $value = preg_replace_callback($emailPattern, function($matches) {
+                                   $email = $matches[1];
+                                   return '<a href="mailto:' . $email . '" class="text-primary text-decoration-none">' . $email . '</a>';
+                               }, $value);
+                               echo $value;
                            }
                            ?>
                         <?php endif; ?>
                         
                         <?php if (!empty($section['content'])): ?>
                            <br><?php
-                           // Function to make phone numbers clickable
+                           // Function to make phone numbers and emails clickable in content
                            $content = $section['content'];
-                           // Pattern to match phone numbers (various formats)
+                           // Pattern to match phone numbers (various formats including international)
                            $phonePattern = '/(\+?\d{1,4}[-.\s]?\(?\d{1,4}\)?[-.\s]?\d{1,4}[-.\s]?\d{1,9})/';
                            $content = preg_replace_callback($phonePattern, function($matches) {
                                $phone = $matches[1];
                                // Clean phone number for tel: link (remove spaces, dashes, dots, parentheses)
                                $cleanPhone = preg_replace('/[^\d+]/', '', $phone);
                                return '<a href="tel:' . $cleanPhone . '" class="text-primary text-decoration-none">' . $phone . '</a>';
+                           }, $content);
+                           // Make emails clickable
+                           $emailPattern = '/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/';
+                           $content = preg_replace_callback($emailPattern, function($matches) {
+                               $email = $matches[1];
+                               return '<a href="mailto:' . $email . '" class="text-primary text-decoration-none">' . $email . '</a>';
                            }, $content);
                            echo $content;
                            ?>
@@ -116,7 +145,7 @@ if (!empty($heroSection)) {
                   <div class="crds-icons d-inline-flex mx-auto mb-3 text-primary fs-2"><i class="fa-solid fa-location-dot"></i></div>
                   <div class="crds-desc">
                      <h5>Head Office</h5>
-                     <p class="fs-6 text-md lh-2 mb-0"> Office No O-445, (4th Floor)Gaur City Center, Greater Noida Uttar Pradesh 201307</p>
+                     <p class="fs-6 text-md lh-2 mb-0">Office No O-445, (4th Floor)Gaur City Center, Greater Noida Uttar Pradesh 201307</p>
                   </div>
                </div>
             </div>
@@ -125,7 +154,8 @@ if (!empty($heroSection)) {
                   <div class="crds-icons d-inline-flex mx-auto mb-3 text-primary fs-2"><i class="fa-solid fa-location-dot"></i></div>
                   <div class="crds-desc">
                      <h5>Branch Office</h5>
-                     <p class="fs-6 text-md lh-2 mb-0">Broadway Shivpora,B.B.Cant Srinagar Airport Distance. 6km,Dal Lake Distance. 3km Pincode : 190004</p>
+                     <p class="fs-6 text-md lh-2 mb-0">Broadway Shivpora,B.B.Cant Srinagar Airport Distance. 6km,Dal Lake Distance. 3km Pincode : 190004<br>
+                     Contact: <a href="tel:+919971124567" class="text-primary text-decoration-none">+91-9971124567</a></p>
                   </div>
                </div>
             </div>

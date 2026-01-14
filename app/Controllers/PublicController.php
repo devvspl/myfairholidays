@@ -146,19 +146,114 @@ class PublicController extends BaseController
 
         $testimonials = $this
             ->testimonialModel
-            ->where('status', 'active')
+            ->where('status', 'approved')
+            ->orderBy('is_featured', 'DESC')
             ->orderBy('created_at', 'DESC')
             ->paginate($perPage);
+
+        // Get categories and destinations for the form (same as admin)
+        $categoryModel = new \App\Models\TestimonialCategoryModel();
+        $categories = $categoryModel->where('status', 'active')->findAll();
+        
+        $destinations = $this->destinationModel->where('status', 'active')->findAll();
 
         $data = array_merge($this->commonData, [
             'title' => 'Customer Testimonials',
             'meta_description' => 'Read what our satisfied customers say about their travel experiences with My Fair Holidays - Best Travel Agency in Noida.',
             'meta_keywords' => 'testimonials, reviews, customer feedback, travel experiences, my fair holidays reviews',
             'testimonials' => $testimonials,
+            'categories' => $categories,
+            'destinations' => $destinations,
             'pager' => $this->testimonialModel->pager
         ]);
 
         return view('public/testimonials', $data);
+    }
+
+    /**
+     * Handle Testimonial Submission
+     */
+    public function submitTestimonial()
+    {
+        if (!$this->request->isAJAX()) {
+            return redirect()->to('/testimonials');
+        }
+
+        $validation = \Config\Services::validation();
+        
+        // Use the same validation rules as admin form
+        $validation->setRules([
+            'customer_name' => 'required|min_length[3]|max_length[255]',
+            'customer_email' => 'required|valid_email',
+            'customer_city' => 'permit_empty|max_length[100]',
+            'rating' => 'required|integer|greater_than[0]|less_than[6]',
+            'testimonial_text' => 'required|min_length[10]',
+            'category_id' => 'permit_empty|integer',
+            'destination_id' => 'permit_empty|integer',
+            'package_name' => 'permit_empty|max_length[255]',
+            'travel_date' => 'permit_empty|valid_date'
+        ]);
+
+        if (!$validation->withRequest($this->request)->run()) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Please check your input and try again.',
+                'errors' => $validation->getErrors()
+            ]);
+        }
+
+        try {
+            // Use the same data structure as admin form
+            $data = [
+                'customer_name' => $this->request->getPost('customer_name'),
+                'customer_email' => $this->request->getPost('customer_email'),
+                'customer_city' => $this->request->getPost('customer_city'),
+                'rating' => $this->request->getPost('rating'),
+                'testimonial_text' => $this->request->getPost('testimonial_text'),
+                'category_id' => $this->request->getPost('category_id') ?: null,
+                'destination_id' => $this->request->getPost('destination_id') ?: null,
+                'package_name' => $this->request->getPost('package_name'),
+                'travel_date' => $this->request->getPost('travel_date') ?: null,
+                'status' => 'pending', // Public submissions are pending approval
+                'is_featured' => 0,
+                'sort_order' => 0
+            ];
+
+            // Handle customer image upload (same as admin)
+            $image = $this->request->getFile('customer_image');
+            if ($image && $image->isValid() && !$image->hasMoved()) {
+                $newName = $image->getRandomName();
+                $uploadPath = FCPATH . 'uploads/testimonials/';
+                
+                if (!is_dir($uploadPath)) {
+                    mkdir($uploadPath, 0755, true);
+                }
+                
+                if ($image->move($uploadPath, $newName)) {
+                    $data['customer_image'] = 'uploads/testimonials/' . $newName;
+                }
+            }
+
+            if ($this->testimonialModel->insert($data)) {
+                // Log the testimonial submission
+                log_message('info', 'Public testimonial submission saved: ' . $data['customer_email']);
+
+                return $this->response->setJSON([
+                    'success' => true,
+                    'message' => 'Thank you for sharing your experience! Your testimonial will be reviewed and published within 24-48 hours.'
+                ]);
+            } else {
+                throw new \Exception('Failed to save testimonial');
+            }
+
+        } catch (\Exception $e) {
+            log_message('error', 'Testimonial submission error: ' . $e->getMessage());
+            
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Sorry, there was an error processing your testimonial. Please try again or contact us directly.'
+            ]);
+        }
     }
 
     public function about()
@@ -353,6 +448,8 @@ class PublicController extends BaseController
         // Get all filter parameters from URL
         $search = $this->request->getVar('search');
         $destinationId = $this->request->getVar('destination_id');
+        $destinationSearch = $this->request->getVar('destination_search'); // New autocomplete search
+        $destinationType = $this->request->getVar('destination_type'); // New filter for domestic/international
         $starRating = $this->request->getVar('star_rating');
         $sidebarStars = $this->request->getVar('sidebar_stars'); // Array of star ratings from sidebar
         $isFeatured = $this->request->getVar('is_featured');
@@ -372,8 +469,9 @@ class PublicController extends BaseController
         
         // Build query for hotels
         $builder = $this->hotelModel
-            ->select('hotels.*, destinations.name as destination_name')
+            ->select('hotels.*, destinations.name as destination_name, destination_types.name as destination_type_name')
             ->join('destinations', 'destinations.id = hotels.destination_id', 'left')
+            ->join('destination_types', 'destination_types.id = destinations.type_id', 'left')
             ->where('hotels.status', 'active');
         
         // Apply search filter
@@ -389,6 +487,20 @@ class PublicController extends BaseController
         // Apply destination filter (from search bar)
         if (!empty($destinationId)) {
             $builder->where('hotels.destination_id', $destinationId);
+        }
+        
+        // Apply destination search filter (from autocomplete)
+        if (!empty($destinationSearch) && empty($destinationId)) {
+            $builder->like('destinations.name', $destinationSearch);
+        }
+        
+        // Apply destination type filter (domestic/international)
+        if (!empty($destinationType)) {
+            if ($destinationType === 'domestic') {
+                $builder->where('destinations.type_id', 1); // Assuming 1 is domestic
+            } elseif ($destinationType === 'international') {
+                $builder->where('destinations.type_id', 2); // Assuming 2 is international
+            }
         }
         
         // Apply star rating filter (from search bar dropdown)
@@ -528,6 +640,8 @@ class PublicController extends BaseController
         $currentFilters = [
             'search' => $search,
             'destination_id' => $destinationId,
+            'destination_search' => $destinationSearch,
+            'destination_type' => $destinationType,
             'star_rating' => $starRating,
             'sidebar_stars' => is_array($sidebarStars) ? implode(',', $sidebarStars) : ($sidebarStars ?? ''),
             'is_featured' => $isFeatured,
@@ -544,8 +658,18 @@ class PublicController extends BaseController
             'has_description' => $hasDescription
         ];
 
+        // Set page title based on filters
+        $pageTitle = 'Hotels - Find Your Perfect Stay';
+        if (!empty($destinationType)) {
+            if ($destinationType === 'domestic') {
+                $pageTitle = 'Domestic Hotels - Find Your Perfect Stay in India';
+            } elseif ($destinationType === 'international') {
+                $pageTitle = 'International Hotels - Find Your Perfect Stay Worldwide';
+            }
+        }
+
         $data = array_merge($this->commonData, [
-            'title' => 'Hotels - Find Your Perfect Stay',
+            'title' => $pageTitle,
             'meta_description' => 'Discover the best hotels with My Fair Holidays - Best Travel Agency in Noida. Book luxury and budget-friendly accommodations.',
             'meta_keywords' => 'hotels, accommodations, luxury hotels, budget hotels, hotel booking, my fair holidays',
             'hotels' => $hotels,
@@ -780,5 +904,168 @@ class PublicController extends BaseController
         ]);
 
         return view('public/blog_detail', $data);
+    }
+
+    /**
+     * Check Hotel Availability
+     */
+    public function checkAvailability()
+    {
+        if (!$this->request->isAJAX()) {
+            return redirect()->to('/hotels');
+        }
+
+        $validation = \Config\Services::validation();
+        $validation->setRules([
+            'hotel_id' => 'required|integer',
+            'check_in_date' => 'required|valid_date',
+            'check_out_date' => 'required|valid_date',
+            'rooms' => 'required|integer|greater_than[0]',
+            'adults' => 'required|integer|greater_than[0]'
+        ]);
+
+        if (!$validation->withRequest($this->request)->run()) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Please check your input and try again.',
+                'errors' => $validation->getErrors()
+            ]);
+        }
+
+        try {
+            $hotelId = $this->request->getPost('hotel_id');
+            $checkInDate = $this->request->getPost('check_in_date');
+            $checkOutDate = $this->request->getPost('check_out_date');
+            $rooms = $this->request->getPost('rooms');
+            $adults = $this->request->getPost('adults');
+            $children = $this->request->getPost('children') ?? 0;
+            $infants = $this->request->getPost('infants') ?? 0;
+
+            // Get hotel details
+            $hotel = $this->hotelModel->find($hotelId);
+            if (!$hotel) {
+                throw new \Exception('Hotel not found');
+            }
+
+            // For now, we'll assume availability and redirect to booking page
+            // In a real system, you'd check actual availability here
+            $bookingData = [
+                'hotel_id' => $hotelId,
+                'check_in_date' => $checkInDate,
+                'check_out_date' => $checkOutDate,
+                'rooms' => $rooms,
+                'adults' => $adults,
+                'children' => $children,
+                'infants' => $infants
+            ];
+
+            // Store booking data in session for the booking page
+            session()->set('booking_data', $bookingData);
+
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Hotel is available for your selected dates!',
+                'redirect' => base_url('/booking?hotel_id=' . $hotelId)
+            ]);
+
+        } catch (\Exception $e) {
+            log_message('error', 'Availability check error: ' . $e->getMessage());
+            
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Unable to check availability. Please try again or contact us directly.'
+            ]);
+        }
+    }
+
+    /**
+     * Quick Booking Request
+     */
+    public function quickBookingRequest()
+    {
+        if (!$this->request->isAJAX()) {
+            return redirect()->to('/hotels');
+        }
+
+        $validation = \Config\Services::validation();
+        $validation->setRules([
+            'hotel_id' => 'required|integer',
+            'check_in_date' => 'required|valid_date',
+            'check_out_date' => 'required|valid_date',
+            'rooms' => 'required|integer|greater_than[0]',
+            'guests' => 'required|integer|greater_than[0]',
+            'guest_name' => 'required|min_length[2]|max_length[100]',
+            'guest_email' => 'required|valid_email',
+            'guest_phone' => 'required|min_length[10]|max_length[20]'
+        ]);
+
+        if (!$validation->withRequest($this->request)->run()) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Please check your input and try again.',
+                'errors' => $validation->getErrors()
+            ]);
+        }
+
+        try {
+            $bookingData = [
+                'hotel_id' => $this->request->getPost('hotel_id'),
+                'check_in_date' => $this->request->getPost('check_in_date'),
+                'check_out_date' => $this->request->getPost('check_out_date'),
+                'rooms' => $this->request->getPost('rooms'),
+                'guests' => $this->request->getPost('guests'),
+                'guest_name' => $this->request->getPost('guest_name'),
+                'guest_email' => $this->request->getPost('guest_email'),
+                'guest_phone' => $this->request->getPost('guest_phone'),
+                'special_requests' => $this->request->getPost('special_requests'),
+                'status' => 'pending',
+                'created_at' => date('Y-m-d H:i:s'),
+                'ip_address' => $this->request->getIPAddress()
+            ];
+
+            // Here you would typically save to a booking_requests table
+            // For now, we'll just log it and return success
+            log_message('info', 'Quick booking request: ' . json_encode($bookingData));
+
+            // You could also send an email notification here
+            // $this->sendBookingNotification($bookingData);
+
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Booking request submitted successfully! We will contact you within 24 hours to confirm your reservation.'
+            ]);
+
+        } catch (\Exception $e) {
+            log_message('error', 'Quick booking request error: ' . $e->getMessage());
+            
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Unable to submit booking request. Please try again or contact us directly.'
+            ]);
+        }
+    }
+
+    /**
+     * Booking Page
+     */
+    public function booking()
+    {
+        $hotelId = $this->request->getVar('hotel_id');
+        $bookingData = session()->get('booking_data');
+
+        $hotel = null;
+        if ($hotelId) {
+            $hotel = $this->hotelModel->find($hotelId);
+        }
+
+        $data = array_merge($this->commonData, [
+            'title' => 'Complete Your Booking',
+            'meta_description' => 'Complete your hotel booking with My Fair Holidays - Best Travel Agency in Noida.',
+            'meta_keywords' => 'hotel booking, reservation, my fair holidays',
+            'hotel' => $hotel,
+            'bookingData' => $bookingData
+        ]);
+
+        return view('public/booking', $data);
     }
 }

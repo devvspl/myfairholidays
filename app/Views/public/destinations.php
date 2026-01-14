@@ -32,17 +32,10 @@
                                        <path d="M12.0624 13.0453C13.7193 13.0453 15.0624 11.7022 15.0624 10.0453C15.0624 8.38849 13.7193 7.04535 12.0624 7.04535C10.4056 7.04535 9.06241 8.38849 9.06241 10.0453C9.06241 11.7022 10.4056 13.0453 12.0624 13.0453Z"/>
                                     </svg>
                                  </div>
-                                 <div class="input-box">
-                                    <select class="form-control fw-medium fs-6" name="destination_id">
-                                       <option value="">All Destinations</option>
-                                       <?php if (!empty($destinations)): ?>
-                                          <?php foreach ($destinations as $destination): ?>
-                                             <option value="<?= $destination['id'] ?>" <?= ($currentFilters['destination_id'] ?? '') == $destination['id'] ? 'selected' : '' ?>>
-                                                <?= esc($destination['name']) ?>
-                                             </option>
-                                          <?php endforeach; ?>
-                                       <?php endif; ?>
-                                    </select>
+                                 <div class="input-box autocomplete-container">
+                                    <input class="form-control fw-medium fs-6 flightInput" type="text" name="destination_search" placeholder="Search destinations..." value="<?= esc($currentFilters['destination_search'] ?? '') ?>" autocomplete="off">
+                                    <input type="hidden" name="destination_id" value="<?= esc($currentFilters['destination_id'] ?? '') ?>" id="destination_id_hidden">
+                                    <div class="suggestions"></div>
                                  </div>
                               </div>
                            </div>
@@ -84,6 +77,7 @@
                      <!-- Preserve search bar values -->
                      <input type="hidden" name="search" value="<?= esc($currentFilters['search'] ?? '') ?>">
                      <input type="hidden" name="destination_id" value="<?= esc($currentFilters['destination_id'] ?? '') ?>">
+                     <input type="hidden" name="destination_search" value="<?= esc($currentFilters['destination_search'] ?? '') ?>">
                      <input type="hidden" name="sort" value="<?= esc($currentFilters['sort'] ?? '') ?>">
                      
                      <!-- Star Rating -->
@@ -364,9 +358,14 @@
                                        <small class="text-muted">per night</small>
                                     </div>
                                     <div class="d-flex align-items-start align-items-md-end text-start text-md-end flex-column">
-                                       <a href="<?= base_url('/hotels/' . ($hotel['slug'] ?? $hotel['id'])) ?>" class="btn btn-md btn-primary full-width fw-medium px-lg-4">
-                                          View Details<i class="fa-solid fa-arrow-trend-up ms-2"></i>
-                                       </a>
+                                       <div class="d-grid gap-2 full-width">
+                                          <a href="<?= base_url('/hotels/' . ($hotel['slug'] ?? $hotel['id'])) ?>" class="btn btn-sm btn-primary fw-medium px-lg-4">
+                                             View Details <i class="fa-solid fa-arrow-trend-up ms-2"></i>
+                                          </a>
+                                          <a href="<?= base_url('/booking?hotel_id=' . $hotel['id']) ?>" class="btn btn-sm btn-outline-primary fw-medium px-lg-4">
+                                             Book Now <i class="fa-solid fa-calendar-check ms-2"></i>
+                                          </a>
+                                       </div>
                                     </div>
                                  </div>
                               </div>
@@ -446,8 +445,95 @@
    </div>
 </section>
 
+
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Dynamic destinations data from PHP
+    const destinations = [
+        <?php if (!empty($destinations)): ?>
+            <?php foreach ($destinations as $destination): ?>
+                { 
+                    id: <?= $destination['id'] ?>, 
+                    name: "<?= esc($destination['name']) ?>", 
+                    duration: "Popular Destination" 
+                },
+            <?php endforeach; ?>
+        <?php endif; ?>
+    ];
+
+    // Autocomplete functionality
+    document.querySelectorAll(".flightInput").forEach(input => {
+        const container = input.closest(".autocomplete-container");
+        const suggestionsBox = container.querySelector(".suggestions");
+        const hiddenInput = container.querySelector('input[type="hidden"]') || document.getElementById('destination_id_hidden');
+
+        const showSuggestions = () => {
+            const query = input.value.toLowerCase();
+            suggestionsBox.innerHTML = "";
+
+            if (query.length === 0) {
+                return;
+            }
+
+            const filtered = destinations.filter(dest =>
+                dest.name.toLowerCase().includes(query)
+            );
+
+            if (filtered.length === 0) {
+                const item = document.createElement("div");
+                item.className = "suggestion-item";
+                item.innerHTML = `<div class="place-name text-muted">No destinations found</div>`;
+                suggestionsBox.appendChild(item);
+                return;
+            }
+
+            filtered.forEach(dest => {
+                const item = document.createElement("div");
+                item.className = "suggestion-item";
+                item.innerHTML = `
+                    <div class="place-name"><i class="bi bi-geo-alt"></i> ${dest.name}</div>
+                    <div class="duration">${dest.duration}</div>
+                `;
+                item.onclick = () => {
+                    input.value = dest.name;
+                    if (hiddenInput) {
+                        hiddenInput.value = dest.id;
+                    }
+                    suggestionsBox.innerHTML = "";
+                };
+                suggestionsBox.appendChild(item);
+            });
+        };
+
+        // Set initial value if destination is already selected
+        if (hiddenInput && hiddenInput.value) {
+            const selectedDest = destinations.find(d => d.id == hiddenInput.value);
+            if (selectedDest) {
+                input.value = selectedDest.name;
+            }
+        }
+
+        input.addEventListener("focus", showSuggestions);
+        input.addEventListener("input", showSuggestions);
+        
+        // Clear hidden field when input is cleared
+        input.addEventListener("input", function() {
+            if (this.value === '' && hiddenInput) {
+                hiddenInput.value = '';
+            }
+        });
+    });
+
+    // Close suggestions when clicking outside
+    document.addEventListener("click", e => {
+        document.querySelectorAll(".suggestions").forEach(box => {
+            if (!e.target.closest(".autocomplete-container")) {
+                box.innerHTML = "";
+            }
+        });
+    });
+
     // Auto-submit sidebar form when filters change
     const sidebarForm = document.getElementById('sidebar-filters-form');
     const filterInputs = sidebarForm.querySelectorAll('input[type="checkbox"], input[type="number"], input[type="text"]');
@@ -490,5 +576,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
-
 <?php include APPPATH . 'Views/layouts/public_footer.php'; ?>

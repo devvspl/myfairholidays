@@ -148,26 +148,9 @@
                                                        <button class="btn btn-primary" type="submit">Sign Up</button>
                                                   </div>
                                              </form>
-                                             
-                                             <p class="mt-3 fw-semibold no-span">Or Sign Up with</p>
-
-                                             <div class="d-flex align-items-center justify-content-center gap-3 text-center">
-                                                  <a href="javascript:void(0);" class="btn btn-outline-danger shadow px-2 d-flex align-items-center justify-content-center gap-1 fw-medium">
-                                                       <iconify-icon icon="flat-color-icons:google" class="fs-20"></iconify-icon>
-                                                       Google
-                                                  </a>
-                                                  <a href="javascript:void(0);" class="btn btn-outline-primary shadow px-2 d-flex align-items-center justify-content-center gap-1 fw-medium">
-                                                       <iconify-icon icon="logos:facebook" class="fs-20"></iconify-icon>
-                                                       Facebook
-                                                  </a>
-                                                  <a href="javascript:void(0);" class="btn btn-outline-dark shadow px-2 d-flex align-items-center justify-content-center gap-1 fw-medium">
-                                                       <iconify-icon icon="mdi:github" class="fs-20"></iconify-icon>
-                                                       Github
-                                                  </a>
-                                             </div>
                                         </div>
 
-                                        <p class="text-muted text-center mt-4 mb-0">I already have an account <a href="<?= base_url('/auth/login') ?>" class="link-primary fst-italic text-decoration-underline fw-semibold">Sign In</a></p>
+                                        <p class="text-muted text-center mb-0">I already have an account <a href="<?= base_url('/auth/login') ?>" class="link-primary fst-italic text-decoration-underline fw-semibold">Sign In</a></p>
                                    </div>
                               </div>
                          </div>

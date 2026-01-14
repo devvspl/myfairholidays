@@ -12,6 +12,7 @@ $routes->get('/about', 'PublicController::about');
 $routes->get('/contact', 'PublicController::contact');
 $routes->post('/contact/submit', 'PublicController::submitContact');
 $routes->get('/testimonials', 'PublicController::testimonials');
+$routes->post('/testimonials/submit', 'PublicController::submitTestimonial');
 $routes->get('/quote', 'PublicController::quote');
 $routes->post('/quote/submit', 'PublicController::submitQuote');
 
@@ -22,8 +23,16 @@ $routes->get('/destinations/(:segment)', 'PublicController::destinationDetail/$1
 $routes->get('/spiritual-tours', 'PublicController::spiritualTours');
 
 // Public Hotel Routes
-$routes->get('/hotels', 'PublicController::destinations'); // Hotels listing (using destinations method)
-$routes->get('/hotels/(:segment)', 'PublicController::hotelDetail/$1'); // Hotel detail page
+$routes->get('/hotels', 'PublicController::destinations'); 
+$routes->get('/hotels/(:segment)', 'PublicController::hotelDetail/$1'); 
+
+// Booking Routes - 3-Step Process
+$routes->get('/booking', 'BookingController::index'); 
+$routes->get('/booking/step2', 'BookingController::step2'); 
+$routes->post('/booking/step2', 'BookingController::processStep2'); 
+$routes->get('/booking/step3', 'BookingController::step3'); 
+$routes->post('/booking/payment', 'BookingController::processPayment'); 
+$routes->get('/booking/success', 'BookingController::success'); 
 
 // Public Blog Routes
 $routes->get('/blog', 'PublicController::blog');
@@ -273,6 +282,12 @@ $routes->group('admin', ['filter' => 'role:admin'], function($routes) {
     $routes->get('tourism-alliances/force-delete/(:num)', 'Admin\TourismAllianceController::forceDelete/$1');
     $routes->post('tourism-alliances/bulk-action', 'Admin\TourismAllianceController::bulkAction');
     $routes->post('tourism-alliances/update-sort-order', 'Admin\TourismAllianceController::updateSortOrder');
+    
+    // Booking Management
+    $routes->get('bookings', 'Admin\BookingController::index');
+    $routes->get('bookings/show/(:num)', 'Admin\BookingController::show/$1');
+    $routes->post('bookings/update-status/(:num)', 'Admin\BookingController::updateStatus/$1');
+    $routes->post('bookings/update-payment-status/(:num)', 'Admin\BookingController::updatePaymentStatus/$1');
     
     // Contact Management
     $routes->get('contacts', 'Admin\ContactController::index');

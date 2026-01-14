@@ -280,6 +280,112 @@ class TestimonialController extends BaseController
     }
 
     /**
+     * Handle bulk actions
+     */
+    public function bulkAction()
+    {
+        if (!$this->request->isAJAX()) {
+            return redirect()->to('/admin/testimonials');
+        }
+
+        $action = $this->request->getPost('action');
+        $testimonialIds = $this->request->getPost('testimonial_ids');
+
+        // Debug logging
+        log_message('info', 'Bulk action request - Action: ' . $action . ', IDs: ' . json_encode($testimonialIds));
+
+        if (empty($action) || empty($testimonialIds) || !is_array($testimonialIds)) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Invalid request data. Action: ' . $action . ', IDs: ' . json_encode($testimonialIds)
+            ]);
+        }
+
+        $successCount = 0;
+        $totalCount = count($testimonialIds);
+        $errors = [];
+
+        foreach ($testimonialIds as $id) {
+            $testimonial = $this->testimonialModel->find($id);
+            if (!$testimonial) {
+                $errors[] = "Testimonial ID {$id} not found";
+                continue;
+            }
+
+            try {
+                switch ($action) {
+                    case 'approve':
+                        if ($this->testimonialModel->update($id, ['status' => 'approved'])) {
+                            $successCount++;
+                        } else {
+                            $errors[] = "Failed to approve testimonial ID {$id}";
+                        }
+                        break;
+
+                    case 'reject':
+                        if ($this->testimonialModel->update($id, ['status' => 'rejected'])) {
+                            $successCount++;
+                        } else {
+                            $errors[] = "Failed to reject testimonial ID {$id}";
+                        }
+                        break;
+
+                    case 'feature':
+                        if ($this->testimonialModel->update($id, ['is_featured' => 1])) {
+                            $successCount++;
+                        } else {
+                            $errors[] = "Failed to feature testimonial ID {$id}";
+                        }
+                        break;
+
+                    case 'unfeature':
+                        if ($this->testimonialModel->update($id, ['is_featured' => 0])) {
+                            $successCount++;
+                        } else {
+                            $errors[] = "Failed to unfeature testimonial ID {$id}";
+                        }
+                        break;
+
+                    case 'delete':
+                        // Delete associated image
+                        if ($testimonial['customer_image'] && file_exists(FCPATH . $testimonial['customer_image'])) {
+                            unlink(FCPATH . $testimonial['customer_image']);
+                        }
+                        
+                        if ($this->testimonialModel->delete($id)) {
+                            $successCount++;
+                        } else {
+                            $errors[] = "Failed to delete testimonial ID {$id}";
+                        }
+                        break;
+
+                    default:
+                        return $this->response->setJSON([
+                            'success' => false,
+                            'message' => 'Invalid action: ' . $action
+                        ]);
+                }
+            } catch (\Exception $e) {
+                $errors[] = "Error processing testimonial ID {$id}: " . $e->getMessage();
+                log_message('error', 'Bulk action error for ID ' . $id . ': ' . $e->getMessage());
+            }
+        }
+
+        $message = "Successfully processed {$successCount} out of {$totalCount} testimonial(s)";
+        if (!empty($errors)) {
+            $message .= ". Errors: " . implode(', ', $errors);
+        }
+
+        return $this->response->setJSON([
+            'success' => $successCount > 0,
+            'message' => $message,
+            'processed' => $successCount,
+            'total' => $totalCount,
+            'errors' => $errors
+        ]);
+    }
+
+    /**
      * Toggle featured status
      */
     public function toggleFeatured($id)

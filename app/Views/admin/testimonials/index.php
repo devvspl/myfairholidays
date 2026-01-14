@@ -328,6 +328,10 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     let deleteTestimonialId = null;
+    
+    // Get CSRF token
+    const csrfToken = '<?= csrf_token() ?>';
+    const csrfHash = '<?= csrf_hash() ?>';
 
     // Select all functionality
     const selectAllCheckbox = document.getElementById('selectAll');
@@ -372,33 +376,97 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        if (!confirm(`Apply "${bulkAction}" to ${selectedTestimonials.length} selected testimonial(s)?`)) {
+        const actionText = document.getElementById('bulkAction').selectedOptions[0].text;
+        if (!confirm(`Are you sure you want to "${actionText}" ${selectedTestimonials.length} selected testimonial(s)?`)) {
             return;
         }
         
         const testimonialIds = Array.from(selectedTestimonials).map(cb => cb.value);
+        const formData = new FormData();
+        formData.append(csrfToken, csrfHash);
+        formData.append('action', bulkAction);
         
-        // Handle bulk actions
+        // Add testimonial IDs as array
         testimonialIds.forEach(id => {
-            switch(bulkAction) {
-                case 'approve':
-                    fetch(`/admin/testimonials/approve/${id}`, { method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-                    break;
-                case 'reject':
-                    fetch(`/admin/testimonials/reject/${id}`, { method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-                    break;
-                case 'feature':
-                    fetch(`/admin/testimonials/toggle-featured/${id}`, { method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-                    break;
-                case 'delete':
-                    window.location.href = `/admin/testimonials/delete/${id}`;
-                    break;
-            }
+            formData.append('testimonial_ids[]', id);
         });
         
-        if (bulkAction !== 'delete') {
-            setTimeout(() => location.reload(), 1000);
-        }
+        // Disable the button and show loading
+        const applyBtn = document.getElementById('applyBulkAction');
+        const bulkSelect = document.getElementById('bulkAction');
+        const originalText = applyBtn.textContent;
+        applyBtn.disabled = true;
+        bulkSelect.disabled = true;
+        applyBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Processing...';
+        
+        fetch('<?= base_url('/admin/testimonials/bulk-action') ?>', {
+            method: 'POST',
+            body: formData,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Bulk action response:', data);
+            
+            if (data.success) {
+                // Show success message
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-success alert-dismissible fade show';
+                alertDiv.innerHTML = `
+                    <i class="fa fa-check-circle me-2"></i>${data.message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                
+                // Insert alert at the top of the page
+                const container = document.querySelector('.container-fluid');
+                container.insertBefore(alertDiv, container.firstChild);
+                
+                // Clear selections
+                document.getElementById('selectAll').checked = false;
+                selectedTestimonials.forEach(cb => cb.checked = false);
+                bulkSelect.value = '';
+                
+                // Reload page after a short delay
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            } else {
+                // Show error message
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-danger alert-dismissible fade show';
+                alertDiv.innerHTML = `
+                    <i class="fa fa-exclamation-triangle me-2"></i><strong>Error:</strong> ${data.message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                
+                const container = document.querySelector('.container-fluid');
+                container.insertBefore(alertDiv, container.firstChild);
+            }
+        })
+        .catch(error => {
+            console.error('Bulk action error:', error);
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-danger alert-dismissible fade show';
+            alertDiv.innerHTML = `
+                <i class="fa fa-exclamation-triangle me-2"></i><strong>Network Error:</strong> ${error.message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            const container = document.querySelector('.container-fluid');
+            container.insertBefore(alertDiv, container.firstChild);
+        })
+        .finally(() => {
+            // Re-enable the controls
+            applyBtn.disabled = false;
+            bulkSelect.disabled = false;
+            applyBtn.textContent = originalText;
+        });
     });
 
     // Status badge click to cycle through statuses
@@ -424,9 +492,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             const endpoint = newStatus === 'approved' ? 'approve' : 'reject';
+            const formData = new FormData();
+            formData.append(csrfToken, csrfHash);
             
-            fetch(`/admin/testimonials/${endpoint}/${testimonialId}`, {
+            fetch(`<?= base_url('/admin/testimonials/') ?>${endpoint}/${testimonialId}`, {
                 method: 'POST',
+                body: formData,
                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
             })
             .then(response => response.json())
@@ -444,9 +515,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.approve-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const testimonialId = this.dataset.testimonialId;
+            const formData = new FormData();
+            formData.append(csrfToken, csrfHash);
             
-            fetch(`/admin/testimonials/approve/${testimonialId}`, {
+            fetch(`<?= base_url('/admin/testimonials/approve/') ?>${testimonialId}`, {
                 method: 'POST',
+                body: formData,
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
                 }
@@ -466,9 +540,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.reject-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const testimonialId = this.dataset.testimonialId;
+            const formData = new FormData();
+            formData.append(csrfToken, csrfHash);
             
-            fetch(`/admin/testimonials/reject/${testimonialId}`, {
+            fetch(`<?= base_url('/admin/testimonials/reject/') ?>${testimonialId}`, {
                 method: 'POST',
+                body: formData,
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
                 }
@@ -484,7 +561,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-
     // Delete functionality
     document.querySelectorAll('.delete-btn').forEach(btn => {
         btn.addEventListener('click', function() {
@@ -496,7 +572,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('confirmDelete')?.addEventListener('click', function() {
         if (deleteTestimonialId) {
-            window.location.href = `/admin/testimonials/delete/${deleteTestimonialId}`;
+            window.location.href = `<?= base_url('/admin/testimonials/delete/') ?>${deleteTestimonialId}`;
         }
     });
 });

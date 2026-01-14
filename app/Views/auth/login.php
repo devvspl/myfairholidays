@@ -111,15 +111,7 @@
                                                   </div>
                                              </form>
                                         </div>
-
-                                        <p class="text-muted text-center mt-4 mb-0">Don't have an account? <a href="<?= base_url('/auth/register') ?>" class="link-primary fst-italic text-decoration-underline fw-semibold">Sign up</a></p>
-                                        
-                                        <div class="text-center mt-3" style="font-size: 12px; color: #999;">
-                                             <p><strong>Demo Accounts:</strong></p>
-                                             <p>Admin: admin@myfairholidays.com / admin123</p>
-                                             <p>Manager: manager@myfairholidays.com / manager123</p>
-                                             <p>User: user@myfairholidays.com / user123</p>
-                                        </div>
+                                        <p class="text-muted text-center mb-0">Don't have an account? <a href="<?= base_url('/auth/register') ?>" class="link-primary fst-italic text-decoration-underline fw-semibold">Sign up</a></p>
                                    </div>
                               </div>
                          </div>

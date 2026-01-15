@@ -3,10 +3,21 @@
 use CodeIgniter\Router\RouteCollection;
 
 /**
- * @var RouteCollection $routes
+ * --------------------------------------------------------------------
+ * Route Definitions
+ * --------------------------------------------------------------------
+ * This file contains all of the routes definitions for the application.
+ * Routes are organized by access level and functionality for better
+ * maintainability and security.
  */
 
-// Public Routes
+/**
+ * --------------------------------------------------------------------
+ * Public Routes
+ * --------------------------------------------------------------------
+ * These routes are accessible to all visitors without authentication.
+ * Includes main website pages, content display, and public forms.
+ */
 $routes->get('/', 'PublicController::index');
 $routes->get('/about', 'PublicController::about');
 $routes->get('/contact', 'PublicController::contact');
@@ -15,35 +26,45 @@ $routes->get('/testimonials', 'PublicController::testimonials');
 $routes->post('/testimonials/submit', 'PublicController::submitTestimonial');
 $routes->get('/quote', 'PublicController::quote');
 $routes->post('/quote/submit', 'PublicController::submitQuote');
-$routes->get('blog', 'BlogController::index');
-$routes->get('blog/(:segment)', 'BlogController::show/$1');
 $routes->get('/terms-of-service', 'PublicController::termsOfService');
 $routes->get('/privacy-policy', 'PublicController::privacyPolicy');
-
-// Public Destination Routes
+$routes->get('/blog', 'PublicController::blog');
+$routes->get('/blog/(:segment)', 'PublicController::blogDetail/$1');
 $routes->get('/destinations', 'PublicController::destinations');
 $routes->get('/destinations/type/(:segment)', 'PublicController::destinationsByType/$1');
 $routes->get('/destinations/(:segment)', 'PublicController::destinationDetail/$1');
 $routes->get('/spiritual-tours', 'PublicController::spiritualTours');
+$routes->get('/hotels', 'PublicController::destinations');
+$routes->get('/hotels/(:segment)', 'PublicController::hotelDetail/$1');
 
-// Public Hotel Routes
-$routes->get('/hotels', 'PublicController::destinations'); 
-$routes->get('/hotels/(:segment)', 'PublicController::hotelDetail/$1'); 
+/**
+ * --------------------------------------------------------------------
+ * Booking System Routes
+ * --------------------------------------------------------------------
+ * Multi-step booking process for hotel reservations and tour packages.
+ * Handles booking flow from initial selection to payment processing.
+ */
+$routes->get('/booking', 'BookingController::index');
+$routes->get('/booking/step2', 'BookingController::step2');
+$routes->post('/booking/step2', 'BookingController::processStep2');
+$routes->get('/booking/step3', 'BookingController::step3');
+$routes->post('/booking/payment', 'BookingController::processPayment');
+$routes->get('/booking/success', 'BookingController::success');
 
-// Booking Routes - 3-Step Process
-$routes->get('/booking', 'BookingController::index'); 
-$routes->get('/booking/step2', 'BookingController::step2'); 
-$routes->post('/booking/step2', 'BookingController::processStep2'); 
-$routes->get('/booking/step3', 'BookingController::step3'); 
-$routes->post('/booking/payment', 'BookingController::processPayment'); 
-$routes->get('/booking/success', 'BookingController::success'); 
+/**
+ * --------------------------------------------------------------------
+ * Authentication Routes
+ * --------------------------------------------------------------------
+ * User authentication system including login, registration, and logout.
+ * Admin login redirect is handled separately for security purposes.
+ */
 
-// Public Blog Routes
-$routes->get('/blog', 'PublicController::blog');
-$routes->get('/blog/(:segment)', 'PublicController::blogDetail/$1');
+// Admin login redirect for direct access
+$routes->get('/admin/login', 'AuthController::login');
+$routes->post('/admin/login', 'AuthController::loginPost');
 
-// Authentication Routes
-$routes->group('auth', function($routes) {
+// Authentication system routes
+$routes->group('auth', function ($routes) {
     $routes->get('login', 'AuthController::login');
     $routes->post('login', 'AuthController::loginPost');
     $routes->get('register', 'AuthController::register');
@@ -51,18 +72,27 @@ $routes->group('auth', function($routes) {
     $routes->get('logout', 'AuthController::logout', ['filter' => 'auth']);
 });
 
-// Admin login redirect
-$routes->get('/admin/login', 'AuthController::login');
-$routes->post('/admin/login', 'AuthController::loginPost');
-
-// Admin Routes
-$routes->group('admin', ['filter' => 'role:admin'], function($routes) {
+/**
+ * --------------------------------------------------------------------
+ * Admin Panel Routes
+ * --------------------------------------------------------------------
+ * Administrative interface routes protected by admin role filter.
+ * Organized by functional modules for comprehensive site management.
+ *
+ * Access Level: Admin only
+ * Filter: role:admin
+ */
+$routes->group('admin', ['filter' => 'role:admin'], function ($routes) {
+    // Dashboard and Analytics
     $routes->get('dashboard', 'Admin\DashboardController::index');
     $routes->get('dashboard/visitor-analytics', 'Admin\DashboardController::getVisitorAnalytics');
     $routes->get('users', 'AdminController::users');
     $routes->get('users/toggle/(:num)', 'AdminController::toggleUserStatus/$1');
-    
-    // User Management
+
+    /**
+     * User Management Module
+     * Complete CRUD operations for user accounts with role-based permissions
+     */
     $routes->get('user-management', 'Admin\UserManagementController::index');
     $routes->get('user-management/create', 'Admin\UserManagementController::create');
     $routes->post('user-management/store', 'Admin\UserManagementController::store');
@@ -74,8 +104,11 @@ $routes->group('admin', ['filter' => 'role:admin'], function($routes) {
     $routes->post('user-management/reset-password/(:num)', 'Admin\UserManagementController::resetPassword/$1');
     $routes->post('user-management/bulk-action', 'Admin\UserManagementController::bulkAction');
     $routes->get('user-management/export', 'Admin\UserManagementController::export');
-    
-    // Role Management
+
+    /**
+     * Role & Permission Management
+     * System roles and permission assignment for access control
+     */
     $routes->get('roles', 'Admin\RoleController::index');
     $routes->get('roles/create', 'Admin\RoleController::create');
     $routes->post('roles/store', 'Admin\RoleController::store');
@@ -85,7 +118,10 @@ $routes->group('admin', ['filter' => 'role:admin'], function($routes) {
     $routes->post('roles/toggle-status/(:num)', 'Admin\RoleController::toggleStatus/$1');
     $routes->post('roles/assign-permissions/(:num)', 'Admin\RoleController::assignPermissions/$1');
 
-    // Pages Management
+    /**
+     * Content Management System
+     * Static pages, blog posts, and general content management
+     */
     $routes->get('pages', 'Admin\PagesController::index');
     $routes->get('pages/create', 'Admin\PagesController::create');
     $routes->post('pages/store', 'Admin\PagesController::store');
@@ -100,7 +136,10 @@ $routes->group('admin', ['filter' => 'role:admin'], function($routes) {
     $routes->get('pages/force-delete/(:num)', 'Admin\PagesController::forceDelete/$1');
     $routes->post('pages/bulk-action', 'Admin\PagesController::bulkAction');
 
-    // Blog/News Management
+    /**
+     * Blog & News Management
+     * Article publishing system with featured content and categorization
+     */
     $routes->get('blogs', 'Admin\BlogController::index');
     $routes->get('blogs/create', 'Admin\BlogController::create');
     $routes->post('blogs/store', 'Admin\BlogController::store');
@@ -114,9 +153,11 @@ $routes->group('admin', ['filter' => 'role:admin'], function($routes) {
     $routes->get('blogs/restore/(:num)', 'Admin\BlogController::restore/$1');
     $routes->get('blogs/force-delete/(:num)', 'Admin\BlogController::forceDelete/$1');
     $routes->post('blogs/bulk-action', 'Admin\BlogController::bulkAction');
-    
-    
-    // Destination Management
+
+    /**
+     * Destination Management
+     * Travel destinations with categorization and popularity features
+     */
     $routes->get('destinations', 'Admin\DestinationController::index');
     $routes->get('destinations/create', 'Admin\DestinationController::create');
     $routes->post('destinations/store', 'Admin\DestinationController::store');
@@ -130,7 +171,10 @@ $routes->group('admin', ['filter' => 'role:admin'], function($routes) {
     $routes->get('destinations/force-delete/(:num)', 'Admin\DestinationController::forceDelete/$1');
     $routes->post('destinations/bulk-action', 'Admin\DestinationController::bulkAction');
 
-    // Destination Types Management
+    /**
+     * Destination Types Management
+     * Categorization system for different types of travel destinations
+     */
     $routes->get('destination-types', 'Admin\DestinationTypeController::index');
     $routes->get('destination-types/create', 'Admin\DestinationTypeController::create');
     $routes->post('destination-types/store', 'Admin\DestinationTypeController::store');
@@ -142,7 +186,10 @@ $routes->group('admin', ['filter' => 'role:admin'], function($routes) {
     $routes->post('destination-types/bulk-action', 'Admin\DestinationTypeController::bulkAction');
     $routes->get('destination-types/api/active', 'Admin\DestinationTypeController::getActiveTypes');
 
-    // Testimonial Categories Management
+    /**
+     * Testimonial System
+     * Customer testimonials with category management and approval workflow
+     */
     $routes->get('testimonial-categories', 'Admin\TestimonialCategoryController::index');
     $routes->get('testimonial-categories/create', 'Admin\TestimonialCategoryController::create');
     $routes->post('testimonial-categories/store', 'Admin\TestimonialCategoryController::store');
@@ -152,7 +199,7 @@ $routes->group('admin', ['filter' => 'role:admin'], function($routes) {
     $routes->post('testimonial-categories/toggle-status/(:num)', 'Admin\TestimonialCategoryController::toggleStatus/$1');
     $routes->post('testimonial-categories/bulk-action', 'Admin\TestimonialCategoryController::bulkAction');
 
-    // Testimonials Management
+    // Testimonial content management
     $routes->get('testimonials', 'Admin\TestimonialController::index');
     $routes->get('testimonials/create', 'Admin\TestimonialController::create');
     $routes->post('testimonials/store', 'Admin\TestimonialController::store');
@@ -163,8 +210,11 @@ $routes->group('admin', ['filter' => 'role:admin'], function($routes) {
     $routes->post('testimonials/reject/(:num)', 'Admin\TestimonialController::reject/$1');
     $routes->post('testimonials/toggle-featured/(:num)', 'Admin\TestimonialController::toggleFeatured/$1');
     $routes->post('testimonials/bulk-action', 'Admin\TestimonialController::bulkAction');
-    
-    // Hotel Management
+
+    /**
+     * Hotel Management System
+     * Comprehensive hotel management with image galleries and FAQ system
+     */
     $routes->get('hotels', 'Admin\HotelController::index');
     $routes->get('hotels/create', 'Admin\HotelController::create');
     $routes->post('hotels/store', 'Admin\HotelController::store');
@@ -178,15 +228,18 @@ $routes->group('admin', ['filter' => 'role:admin'], function($routes) {
     $routes->post('hotels/delete-image/(:num)', 'Admin\HotelController::deleteImage/$1');
     $routes->post('hotels/set-featured-image/(:num)/(:num)', 'Admin\HotelController::setFeaturedImage/$1/$2');
     $routes->post('hotels/update-image-order', 'Admin\HotelController::updateImageOrder');
-    
-    // Hotel FAQ routes
+
+    // Hotel FAQ management system
     $routes->get('hotels/faqs/(:num)', 'Admin\HotelController::manageFaqs/$1');
     $routes->post('hotels/faqs/(:num)/store', 'Admin\HotelController::storeFaq/$1');
     $routes->post('hotels/faqs/(:num)/update/(:num)', 'Admin\HotelController::updateFaq/$1/$2');
     $routes->post('hotels/faqs/(:num)/delete/(:num)', 'Admin\HotelController::deleteFaq/$1/$2');
     $routes->post('hotels/faqs/(:num)/update-order', 'Admin\HotelController::updateFaqOrder/$1');
-    
-    // Itinerary Management
+
+    /**
+     * Itinerary Management
+     * Travel itineraries with category organization and status management
+     */
     $routes->get('itineraries', 'Admin\ItineraryController::index');
     $routes->get('itineraries/create', 'Admin\ItineraryController::create');
     $routes->post('itineraries/store', 'Admin\ItineraryController::store');
@@ -194,8 +247,8 @@ $routes->group('admin', ['filter' => 'role:admin'], function($routes) {
     $routes->post('itineraries/update/(:num)', 'Admin\ItineraryController::update/$1');
     $routes->get('itineraries/delete/(:num)', 'Admin\ItineraryController::delete/$1');
     $routes->post('itineraries/toggle-status/(:num)', 'Admin\ItineraryController::toggleStatus/$1');
-    
-    // Itinerary Category Management
+
+    // Itinerary categorization system
     $routes->get('itinerary-categories', 'Admin\ItineraryCategoryController::index');
     $routes->get('itinerary-categories/create', 'Admin\ItineraryCategoryController::create');
     $routes->post('itinerary-categories/store', 'Admin\ItineraryCategoryController::store');
@@ -203,8 +256,11 @@ $routes->group('admin', ['filter' => 'role:admin'], function($routes) {
     $routes->post('itinerary-categories/update/(:num)', 'Admin\ItineraryCategoryController::update/$1');
     $routes->get('itinerary-categories/delete/(:num)', 'Admin\ItineraryCategoryController::delete/$1');
     $routes->post('itinerary-categories/toggle-status/(:num)', 'Admin\ItineraryCategoryController::toggleStatus/$1');
-    
-    // Review Management
+
+    /**
+     * Review Management System
+     * Customer reviews with approval workflow and categorization
+     */
     $routes->get('reviews', 'Admin\ReviewController::index');
     $routes->get('reviews/create', 'Admin\ReviewController::create');
     $routes->post('reviews/store', 'Admin\ReviewController::store');
@@ -213,8 +269,8 @@ $routes->group('admin', ['filter' => 'role:admin'], function($routes) {
     $routes->get('reviews/delete/(:num)', 'Admin\ReviewController::delete/$1');
     $routes->post('reviews/approve/(:num)', 'Admin\ReviewController::approve/$1');
     $routes->post('reviews/reject/(:num)', 'Admin\ReviewController::reject/$1');
-    
-    // Review Category Management
+
+    // Review categorization system
     $routes->get('review-categories', 'Admin\ReviewCategoryController::index');
     $routes->get('review-categories/create', 'Admin\ReviewCategoryController::create');
     $routes->post('review-categories/store', 'Admin\ReviewCategoryController::store');
@@ -222,8 +278,11 @@ $routes->group('admin', ['filter' => 'role:admin'], function($routes) {
     $routes->post('review-categories/update/(:num)', 'Admin\ReviewCategoryController::update/$1');
     $routes->get('review-categories/delete/(:num)', 'Admin\ReviewCategoryController::delete/$1');
     $routes->post('review-categories/toggle-status/(:num)', 'Admin\ReviewCategoryController::toggleStatus/$1');
-    
-    // Payment History Management
+
+    /**
+     * Financial Management
+     * Payment processing, transaction history, and financial reporting
+     */
     $routes->get('payment-history', 'Admin\PaymentHistoryController::index');
     $routes->get('payment-history/show/(:num)', 'Admin\PaymentHistoryController::show/$1');
     $routes->post('payment-history/update-status/(:num)', 'Admin\PaymentHistoryController::updateStatus/$1');
@@ -231,8 +290,11 @@ $routes->group('admin', ['filter' => 'role:admin'], function($routes) {
     $routes->get('payment-history/export', 'Admin\PaymentHistoryController::export');
     $routes->get('payment-history/statistics', 'Admin\PaymentHistoryController::statistics');
     $routes->get('payment-history/delete/(:num)', 'Admin\PaymentHistoryController::delete/$1');
-    
-    // Meta Tag Management
+
+    /**
+     * SEO & Meta Tag Management
+     * Search engine optimization and meta tag configuration
+     */
     $routes->get('meta-tags', 'Admin\MetaTagController::index');
     $routes->get('meta-tags/create', 'Admin\MetaTagController::create');
     $routes->post('meta-tags/store', 'Admin\MetaTagController::store');
@@ -242,8 +304,11 @@ $routes->group('admin', ['filter' => 'role:admin'], function($routes) {
     $routes->post('meta-tags/toggle-status/(:num)', 'Admin\MetaTagController::toggleStatus/$1');
     $routes->match(['get', 'post'], 'meta-tags/bulk-import', 'Admin\MetaTagController::bulkImport');
     $routes->get('meta-tags/export', 'Admin\MetaTagController::export');
-      
-    // Video Gallery Management
+
+    /**
+     * Media Gallery Management
+     * Video and image gallery systems with homepage integration
+     */
     $routes->get('videos', 'Admin\VideoGalleryController::index');
     $routes->get('videos/create', 'Admin\VideoGalleryController::create');
     $routes->post('videos/store', 'Admin\VideoGalleryController::store');
@@ -257,8 +322,8 @@ $routes->group('admin', ['filter' => 'role:admin'], function($routes) {
     $routes->get('videos/toggle-status/(:num)', 'Admin\VideoGalleryController::toggleStatus/$1');
     $routes->post('videos/bulk-action', 'Admin\VideoGalleryController::bulkAction');
     $routes->post('videos/update-sort-order', 'Admin\VideoGalleryController::updateSortOrder');
-    
-    // Image Gallery Management
+
+    // Image gallery management system
     $routes->get('images', 'Admin\ImageGalleryController::index');
     $routes->get('images/create', 'Admin\ImageGalleryController::create');
     $routes->post('images/store', 'Admin\ImageGalleryController::store');
@@ -272,8 +337,11 @@ $routes->group('admin', ['filter' => 'role:admin'], function($routes) {
     $routes->get('images/toggle-status/(:num)', 'Admin\ImageGalleryController::toggleStatus/$1');
     $routes->post('images/bulk-action', 'Admin\ImageGalleryController::bulkAction');
     $routes->post('images/update-sort-order', 'Admin\ImageGalleryController::updateSortOrder');
-    
-    // Tourism Alliance Management
+
+    /**
+     * Partnership Management
+     * Tourism alliance and partnership organization system
+     */
     $routes->get('tourism-alliances', 'Admin\TourismAllianceController::index');
     $routes->get('tourism-alliances/create', 'Admin\TourismAllianceController::create');
     $routes->post('tourism-alliances/store', 'Admin\TourismAllianceController::store');
@@ -287,23 +355,32 @@ $routes->group('admin', ['filter' => 'role:admin'], function($routes) {
     $routes->get('tourism-alliances/force-delete/(:num)', 'Admin\TourismAllianceController::forceDelete/$1');
     $routes->post('tourism-alliances/bulk-action', 'Admin\TourismAllianceController::bulkAction');
     $routes->post('tourism-alliances/update-sort-order', 'Admin\TourismAllianceController::updateSortOrder');
-    
-    // Booking Management
+
+    /**
+     * Booking Administration
+     * Reservation management and booking status tracking
+     */
     $routes->get('bookings', 'Admin\BookingController::index');
     $routes->get('bookings/(:num)', 'Admin\BookingController::show/$1');
     $routes->get('bookings/show/(:num)', 'Admin\BookingController::show/$1');
     $routes->post('bookings/(:num)/update-status', 'Admin\BookingController::updateStatus/$1');
     $routes->post('bookings/(:num)/update-payment-status', 'Admin\BookingController::updatePaymentStatus/$1');
-    
-    // Contact Management
+
+    /**
+     * Communication Management
+     * Contact form submissions and customer inquiry handling
+     */
     $routes->get('contacts', 'Admin\ContactController::index');
     $routes->get('contacts/show/(:num)', 'Admin\ContactController::show/$1');
     $routes->post('contacts/update-status/(:num)', 'Admin\ContactController::updateStatus/$1');
     $routes->get('contacts/delete/(:num)', 'Admin\ContactController::delete/$1');
     $routes->post('contacts/bulk-action', 'Admin\ContactController::bulkAction');
     $routes->get('contacts/export', 'Admin\ContactController::export');
-    
-    // About Sections Management
+
+    /**
+     * Page Section Management
+     * Modular content sections for About
+     */
     $routes->get('about-sections', 'Admin\AboutSectionController::index');
     $routes->get('about-sections/create', 'Admin\AboutSectionController::create');
     $routes->post('about-sections/store', 'Admin\AboutSectionController::store');
@@ -312,48 +389,60 @@ $routes->group('admin', ['filter' => 'role:admin'], function($routes) {
     $routes->get('about-sections/delete/(:num)', 'Admin\AboutSectionController::delete/$1');
     $routes->post('about-sections/toggle-status/(:num)', 'Admin\AboutSectionController::toggleStatus/$1');
     $routes->post('about-sections/update-sort-order', 'Admin\AboutSectionController::updateSortOrder');
-    
-    // Contact Sections Management
-    $routes->get('contact-sections', 'Admin\ContactSectionController::index');
-    $routes->get('contact-sections/create', 'Admin\ContactSectionController::create');
-    $routes->post('contact-sections/store', 'Admin\ContactSectionController::store');
-    $routes->get('contact-sections/edit/(:num)', 'Admin\ContactSectionController::edit/$1');
-    $routes->post('contact-sections/update/(:num)', 'Admin\ContactSectionController::update/$1');
-    $routes->get('contact-sections/delete/(:num)', 'Admin\ContactSectionController::delete/$1');
-    $routes->post('contact-sections/toggle-status/(:num)', 'Admin\ContactSectionController::toggleStatus/$1');
-    $routes->post('contact-sections/update-sort-order', 'Admin\ContactSectionController::updateSortOrder');
-    
-    // Page Management
-    $routes->get('pages', 'Admin\PagesController::index');
-    $routes->get('pages/create', 'Admin\PagesController::create');
-    $routes->post('pages/store', 'Admin\PagesController::store');
-    $routes->get('pages/edit/(:num)', 'Admin\PagesController::edit/$1');
-    $routes->post('pages/update/(:num)', 'Admin\PagesController::update/$1');
-    $routes->get('pages/delete/(:num)', 'Admin\PagesController::delete/$1');
-    
-    // Legal Pages Management
+
+    /**
+     * Contact page section management
+     * Modular content sections for Contact pages
+     */
+    $routes->get('contact-sections', 'Admin\ContactSectionController::index');  
+    $routes->get('contact-sections/create', 'Admin\ContactSectionController::create');  
+    $routes->post('contact-sections/store', 'Admin\ContactSectionController::store');  
+    $routes->get('contact-sections/edit/(:num)', 'Admin\ContactSectionController::edit/$1');  
+    $routes->post('contact-sections/update/(:num)', 'Admin\ContactSectionController::update/$1');  
+    $routes->get('contact-sections/delete/(:num)', 'Admin\ContactSectionController::delete/$1');  
+    $routes->post('contact-sections/toggle-status/(:num)', 'Admin\ContactSectionController::toggleStatus/$1');  
+    $routes->post('contact-sections/update-sort-order', 'Admin\ContactSectionController::updateSortOrder');  
+
+    /**
+     * Legal Document Management
+     * Terms of Service and Privacy Policy content management
+     */
     $routes->get('terms-of-service', 'Admin\TermsOfServiceController::index');
     $routes->post('terms-of-service/update', 'Admin\TermsOfServiceController::update');
     $routes->post('terms-of-service/toggle-status', 'Admin\TermsOfServiceController::toggleStatus');
     $routes->get('terms-of-service/preview', 'Admin\TermsOfServiceController::preview');
-    
+
     $routes->get('privacy-policy', 'Admin\PrivacyPolicyController::index');
     $routes->post('privacy-policy/update', 'Admin\PrivacyPolicyController::update');
     $routes->post('privacy-policy/toggle-status', 'Admin\PrivacyPolicyController::toggleStatus');
     $routes->get('privacy-policy/preview', 'Admin\PrivacyPolicyController::preview');
 });
 
-// Manager Routes
-$routes->group('manager', ['filter' => 'role:manager'], function($routes) {
+/**
+ * --------------------------------------------------------------------
+ * Manager Panel Routes
+ * --------------------------------------------------------------------
+ * Mid-level administrative access for managers with limited permissions.
+ *
+ * Access Level: Manager only
+ * Filter: role:manager
+ */
+$routes->group('manager', ['filter' => 'role:manager'], function ($routes) {
     $routes->get('dashboard', 'ManagerController::dashboard');
     $routes->get('users', 'ManagerController::users');
 });
 
-// User Routes
-$routes->group('user', ['filter' => 'role:user'], function($routes) {
+/**
+ * --------------------------------------------------------------------
+ * User Dashboard Routes
+ * --------------------------------------------------------------------
+ * User-specific functionality including profile management and personal dashboard.
+ *
+ * Access Level: Authenticated users only
+ * Filter: role:user
+ */
+$routes->group('user', ['filter' => 'role:user'], function ($routes) {
     $routes->get('dashboard', 'UserController::dashboard');
     $routes->get('profile', 'UserController::profile');
     $routes->post('profile', 'UserController::updateProfile');
 });
-
-

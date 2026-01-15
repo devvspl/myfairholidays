@@ -39,11 +39,31 @@
             <span><i class="fas fa-map-marker-alt"></i>Gaur City Center, Greater Noida Uttar Pradesh 201307</span>
          </div>
          <div class="social-side">
-            <i class="fab fa-facebook-f"></i> <i class="fab fa-instagram"></i>
-            <i class="fab fa-twitter"></i>
-            <i class="fab fa-linkedin-in"></i>
-            <i class="fab fa-instagram"></i>
-         </div>
+    <a href="https://www.facebook.com/MyFairHolidays" target="_blank" title="Facebook">
+        <i class="fab fa-facebook-f"></i>
+    </a>
+
+    <a href="https://www.instagram.com/myfairholidays/" target="_blank" title="Instagram">
+        <i class="fab fa-instagram"></i>
+    </a>
+
+    <a href="https://twitter.com/MyFairHolidays" target="_blank" title="Twitter">
+        <i class="fab fa-twitter"></i>
+    </a>
+
+    <a href="https://www.linkedin.com/company/my-fair-holidays" target="_blank" title="LinkedIn">
+        <i class="fab fa-linkedin-in"></i>
+    </a>
+
+    <a href="https://www.youtube.com/channel/UCWpKAllkfYN6fUN_3D2A4Bw" target="_blank" title="YouTube">
+        <i class="fab fa-youtube"></i>
+    </a>
+
+    <a href="https://wa.me/9971124567" target="_blank" title="WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+</div>
+
       </div>
       <header class="mfh-header">
          <div class="mfh-container">

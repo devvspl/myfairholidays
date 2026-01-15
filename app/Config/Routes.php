@@ -15,6 +15,10 @@ $routes->get('/testimonials', 'PublicController::testimonials');
 $routes->post('/testimonials/submit', 'PublicController::submitTestimonial');
 $routes->get('/quote', 'PublicController::quote');
 $routes->post('/quote/submit', 'PublicController::submitQuote');
+$routes->get('blog', 'BlogController::index');
+$routes->get('blog/(:segment)', 'BlogController::show/$1');
+$routes->get('/terms-of-service', 'PublicController::termsOfService');
+$routes->get('/privacy-policy', 'PublicController::privacyPolicy');
 
 // Public Destination Routes
 $routes->get('/destinations', 'PublicController::destinations');
@@ -326,6 +330,17 @@ $routes->group('admin', ['filter' => 'role:admin'], function($routes) {
     $routes->get('pages/edit/(:num)', 'Admin\PagesController::edit/$1');
     $routes->post('pages/update/(:num)', 'Admin\PagesController::update/$1');
     $routes->get('pages/delete/(:num)', 'Admin\PagesController::delete/$1');
+    
+    // Legal Pages Management
+    $routes->get('terms-of-service', 'Admin\TermsOfServiceController::index');
+    $routes->post('terms-of-service/update', 'Admin\TermsOfServiceController::update');
+    $routes->post('terms-of-service/toggle-status', 'Admin\TermsOfServiceController::toggleStatus');
+    $routes->get('terms-of-service/preview', 'Admin\TermsOfServiceController::preview');
+    
+    $routes->get('privacy-policy', 'Admin\PrivacyPolicyController::index');
+    $routes->post('privacy-policy/update', 'Admin\PrivacyPolicyController::update');
+    $routes->post('privacy-policy/toggle-status', 'Admin\PrivacyPolicyController::toggleStatus');
+    $routes->get('privacy-policy/preview', 'Admin\PrivacyPolicyController::preview');
 });
 
 // Manager Routes
@@ -341,6 +356,4 @@ $routes->group('user', ['filter' => 'role:user'], function($routes) {
     $routes->post('profile', 'UserController::updateProfile');
 });
 
-// Public Blog Routes
-$routes->get('blog', 'BlogController::index');
-$routes->get('blog/(:segment)', 'BlogController::show/$1');
+

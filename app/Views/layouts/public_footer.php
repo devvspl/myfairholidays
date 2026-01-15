@@ -1,71 +1,126 @@
-<footer class="mf-footer">
-   <div class="mf-footer-container">
-      <div class="mf-col">
-         <img src="<?php echo base_url(); ?>main/images/logo.png" class="mf-logo" alt="My Fair Holidays">
-         <p class="mf-desc">
-            We offer carefully curated destinations and tours that capture the true essence.
-         </p>
-         <div class="mf-contact">
-            <div class="mf-contact-box">
-               <span>📞</span>
-               <div>
-                  <small>Call Us</small>
-                  <p>+88 09 53 33 09</p>
+<footer class="footer skin-dark-footer">
+   <div style="padding: 30px 0;">
+      <div class="container">
+         <div class="row">
+            <div class="col-lg-2 col-md-6">
+               <div class="footer-widget">
+                  <img src="<?php echo base_url(); ?>main/images/logo.png" class="img-footer" alt="My Fair Holidays" style="border-radius: 5px;">
+                  <div class="footer-add">
+                     <p>We make your dream more beautiful & enjoyful with lots of happiness.</p>
+                  </div>
+                 <div class="foot-socials">
+    <ul>
+        <li>
+            <a href="https://www.facebook.com/MyFairHolidays" target="_blank" title="Facebook">
+                <i class="fa-brands fa-facebook-f"></i>
+            </a>
+        </li>
+
+        <li>
+            <a href="https://www.instagram.com/myfairholidays/" target="_blank" title="Instagram">
+                <i class="fa-brands fa-instagram"></i>
+            </a>
+        </li>
+
+        <li>
+            <a href="https://twitter.com/MyFairHolidays" target="_blank" title="Twitter">
+                <i class="fa-brands fa-twitter"></i>
+            </a>
+        </li>
+
+        <li>
+            <a href="https://www.linkedin.com/company/my-fair-holidays" target="_blank" title="LinkedIn">
+                <i class="fa-brands fa-linkedin-in"></i>
+            </a>
+        </li>
+
+
+        <li>
+            <a href="https://www.youtube.com/channel/UCWpKAllkfYN6fUN_3D2A4Bw" target="_blank" title="YouTube">
+                <i class="fa-brands fa-youtube"></i>
+            </a>
+        </li>
+
+        <li>
+            <a href="https://wa.me/9971124567" target="_blank" title="WhatsApp">
+                <i class="fa-brands fa-whatsapp"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
                </div>
             </div>
-            <div class="mf-contact-box">
-               <span>✉</span>
-               <div>
-                  <small>Mail Us</small>
-                  <p>info@myfairholidays.com</p>
+            <div class="col-lg-2 col-md-6">
+               <div class="footer-widget">
+                  <h4 class="widget-title">Quick Links</h4>
+                  <ul class="footer-menu">
+                     <li><a href="<?= base_url('/') ?>">Home</a></li>
+                     <li><a href="<?= base_url('/about') ?>">About Us</a></li>
+                     <li><a href="<?= base_url('/blog') ?>">Our Blogs</a></li>
+                     <li><a href="<?= base_url('/testimonials') ?>">Testimonials</a></li>
+                     <li><a href="<?= base_url('/contact') ?>">Contact Us</a></li>
+                     <li><a href="<?= base_url('/payment') ?>">Payment</a></li>
+                     <li><a href="<?= base_url('/register-as-agent') ?>">Register as Agent</a></li>
+                  </ul>
+               </div>
+            </div>
+            <div class="col-lg-2 col-md-6">
+               <div class="footer-widget">
+                  <h4 class="widget-title">Domestic</h4>
+                  <ul class="footer-menu">
+                     <?php if (!empty($footerDomesticDestinations) && is_array($footerDomesticDestinations)): ?>
+                        <?php foreach (array_slice($footerDomesticDestinations, 0, 6) as $destination): ?>
+                           <li><a href="<?= base_url('/hotels?search=&destination_id=' . $destination['id']) ?>"><?= esc($destination['name']) ?></a></li>
+                        <?php endforeach; ?>
+                     <?php endif; ?>
+                  </ul>
+               </div>
+            </div>
+            <div class="col-lg-2 col-md-6">
+               <div class="footer-widget">
+                  <h4 class="widget-title">International</h4>
+                  <ul class="footer-menu">
+                     <?php if (!empty($footerInternationalDestinations) && is_array($footerInternationalDestinations)): ?>
+                        <?php foreach (array_slice($footerInternationalDestinations, 0, 6) as $destination): ?>
+                           <li><a href="<?= base_url('/hotels?search=&destination_id=' . $destination['id']) ?>"><?= esc($destination['name']) ?></a></li>
+                        <?php endforeach; ?>
+                     <?php endif; ?>
+                  </ul>
+               </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+               <div class="footer-widget">
+                  <h4 class="widget-title">Contact Info</h4>
+                  <div class="footer-add">
+
+                     <p><i class="fas fa-map-marker-alt me-2"></i><b>Head Office:</b> Office No O-445, (4th Floor)<br>Gaur City Center, Greater Noida<br>Uttar Pradesh 201307</p>
+                     <p><i class="fas fa-map-marker-alt me-2"></i><b>Branch Office:</b> Broadway Shivpora, B.B.Cant<br>Srinagar Airport Distance: 6km<br>Dal Lake Distance: 3km<br>Pincode: 190004</p>
+                                          <p><i class="fas fa-phone me-2"></i><a href="tel:+919971124567" style="color: inherit;">+91-9971124567</a></p>
+                     <p><i class="fas fa-phone me-2"></i><a href="tel:+919582560106" style="color: inherit;">+91-9582560106</a></p>
+                     <p><i class="fas fa-envelope me-2"></i><a href="mailto:info@myfairholidays.com" style="color: inherit;">info@myfairholidays.com</a></p>
+                  </div>
                </div>
             </div>
          </div>
       </div>
-      <div class="mf-col">
-         <h4>Useful Links</h4>
-         <a href="#">All Destination</a>
-         <a href="#">24/7 Support</a>
-         <a href="#">Our Blog</a>
-         <a href="#">Tour Places</a>
-         <a href="#">Reviews</a>
-      </div>
-      <div class="mf-col">
-         <h4>Domestic Tour</h4>
-         <a href="#">Himachal Tour</a>
-         <a href="#">Leh Ladakh</a>
-         <a href="#">Rajasthan</a>
-         <a href="#">Uttarakhand</a>
-         <a href="#">North East</a>
-      </div>
-      <div class="mf-col">
-         <h4>International Tour</h4>
-         <a href="#">Bali</a>
-         <a href="#">Europe</a>
-         <a href="#">Malaysia</a>
-         <a href="#">Thailand</a>
-         <a href="#">Vietnam</a>
-      </div>
-      <div class="mf-col">
-         <h4>Gallery</h4>
-         <div class="mf-gallery">
-            <img src="<?php echo base_url(); ?>main/images/portrait-overweight-couple-traveling-world-world-tourism-day.jpg">
-            <img src="<?php echo base_url(); ?>main/images/group-friends-searching-location-through-binoculars-map.jpg">
-            <img src="<?php echo base_url(); ?>main/images/happy-young-girl-amusement-park.jpg">
-            <img src="<?php echo base_url(); ?>main/images/myfair.jpg">
-            <img src="<?php echo base_url(); ?>main/images/group-friends-searching-location-through-binoculars-map.jpg">
-         </div>
-         <div class="mf-newsletter">
-            <h4>Subscribe as a Newsletter</h4>
-            <div class="mf-newsletter-box">
-               <input type="email" placeholder="Enter your email">
-               <button>Subscribe</button>
+   </div>
+   <div class="footer-bottom border-top">
+      <div class="container">
+         <div class="row align-items-center justify-content-between">
+            <div class="col-xl-6 col-lg-6 col-md-6">
+               <p class="mb-0">© 2025 My Fair Holidays. All Rights Reserved.</p>
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-6">
+               <ul class="p-0 d-flex justify-content-start justify-content-md-end text-start text-md-end m-0">
+                  <li><a href="<?= base_url('/terms-of-service') ?>">Terms of Service</a></li>
+                  <li class="ms-3"><a href="<?= base_url('/privacy-policy') ?>">Privacy Policy</a></li>
+               </ul>
             </div>
          </div>
       </div>
    </div>
 </footer>
-<!-- Modals -->
 <div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="loginmodal" aria-hidden="true">
    <div class="modal-dialog modal-dialog-centered login-pop-form" role="document">
       <div class="modal-content" id="loginmodal">

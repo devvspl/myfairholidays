@@ -26,6 +26,8 @@ class PublicController extends BaseController
     protected $contactModel;
     protected $aboutSectionModel;
     protected $contactSectionModel;
+    protected $termsModel;
+    protected $policyModel;
 
     public function __construct()
     {
@@ -41,6 +43,8 @@ class PublicController extends BaseController
         $this->contactModel = new \App\Models\ContactModel();
         $this->aboutSectionModel = new \App\Models\AboutSectionModel();
         $this->contactSectionModel = new \App\Models\ContactSectionModel();
+        $this->termsModel = new \App\Models\TermsOfServiceModel();
+        $this->policyModel = new \App\Models\PrivacyPolicyModel();
     }
 
     /**
@@ -1085,5 +1089,55 @@ class PublicController extends BaseController
         ]);
 
         return view('public/booking', $data);
+    }
+
+    /**
+     * Terms of Service Page
+     */
+    public function termsOfService()
+    {
+        // Track visitor
+        $this->trackVisit('Terms of Service');
+        
+        // Get Terms of Service from database
+        $terms = $this->termsModel->getTerms();
+        
+        if (!$terms || $terms['status'] !== 'active') {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Terms of Service not found');
+        }
+
+        $data = array_merge($this->commonData, [
+            'title' => $terms['meta_title'] ?: $terms['title'] . ' - My Fair Holidays',
+            'meta_description' => $terms['meta_description'] ?: 'Read the terms of service for My Fair Holidays - Best Travel Agency in Noida.',
+            'meta_keywords' => $terms['meta_keywords'] ?: 'terms of service, terms and conditions, policies, my fair holidays',
+            'page' => $terms
+        ]);
+
+        return view('public/terms_of_service', $data);
+    }
+
+    /**
+     * Privacy Policy Page
+     */
+    public function privacyPolicy()
+    {
+        // Track visitor
+        $this->trackVisit('Privacy Policy');
+        
+        // Get Privacy Policy from database
+        $policy = $this->policyModel->getPolicy();
+        
+        if (!$policy || $policy['status'] !== 'active') {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Privacy Policy not found');
+        }
+
+        $data = array_merge($this->commonData, [
+            'title' => $policy['meta_title'] ?: $policy['title'] . ' - My Fair Holidays',
+            'meta_description' => $policy['meta_description'] ?: 'Read the privacy policy of My Fair Holidays - Best Travel Agency in Noida.',
+            'meta_keywords' => $policy['meta_keywords'] ?: 'privacy policy, data protection, personal information, my fair holidays',
+            'page' => $policy
+        ]);
+
+        return view('public/privacy_policy', $data);
     }
 }

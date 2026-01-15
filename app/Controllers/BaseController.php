@@ -68,7 +68,9 @@ abstract class BaseController extends Controller
             'social_twitter' => '#',
             'social_linkedin' => '#',
             'destinationTypes' => [],
-            'popularDestinations' => []
+            'popularDestinations' => [],
+            'footerDomesticDestinations' => [],
+            'footerInternationalDestinations' => []
         ];
 
         // Try to load navigation data for public pages
@@ -78,6 +80,28 @@ abstract class BaseController extends Controller
             
             $this->commonData['destinationTypes'] = $destinationTypeModel->getActiveTypesWithDestinations();
             $this->commonData['popularDestinations'] = $destinationModel->getPopularDestinations(10);
+            
+            // Load footer destinations - get type IDs first
+            $domesticType = $destinationTypeModel->where('LOWER(name)', 'domestic')->first();
+            $internationalType = $destinationTypeModel->where('LOWER(name)', 'international')->first();
+            
+            if ($domesticType) {
+                $this->commonData['footerDomesticDestinations'] = $destinationModel
+                    ->where('status', 'active')
+                    ->where('type_id', $domesticType['id'])
+                    ->orderBy('name', 'ASC')
+                    ->limit(6)
+                    ->findAll();
+            }
+            
+            if ($internationalType) {
+                $this->commonData['footerInternationalDestinations'] = $destinationModel
+                    ->where('status', 'active')
+                    ->where('type_id', $internationalType['id'])
+                    ->orderBy('name', 'ASC')
+                    ->limit(6)
+                    ->findAll();
+            }
         } catch (\Exception $e) {
             // Log the error but don't break the page
             log_message('error', 'Failed to load navigation data: ' . $e->getMessage());

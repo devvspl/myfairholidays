@@ -46,7 +46,7 @@ span,
 a,
 li,
 label {
-    font-size: 16px !important;
+    font-size: 14px !important;
     line-height: 1.6 !important;
     -webkit-text-size-adjust: 100% !important;
 }
@@ -286,7 +286,7 @@ section {
 }
 
 .top-bar .social-side i:hover {
-    color: #000;
+    color: #fe8815;
 }
 
 .top-bar i {
@@ -870,9 +870,7 @@ section {
     transition: 0.3s ease;
 }
 
-.top-bar .social-side i:hover {
-    color: #000;
-}
+
 
 .top-bar i {
     color: #ffffff;

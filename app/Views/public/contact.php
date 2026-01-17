@@ -114,8 +114,12 @@ if (!empty($heroSection)) {
                </div>
             </div>
             <?php endforeach; ?>
+            
          <?php else: ?>
-            <!-- Fallback to static content if no dynamic sections -->
+         
+         
+    <!-- Fallback to static content if no dynamic sections -->
+    
             <div class="col-xl-3 col-lg-3 col-md-6">
                <div class="card p-4 rounded-4 border br-dashed text-center h-100">
                   <div class="crds-icons d-inline-flex mx-auto mb-3 text-primary fs-2"><i class="fa-solid fa-briefcase"></i></div>
@@ -158,7 +162,14 @@ if (!empty($heroSection)) {
                      Contact: <a href="tel:+919971124567" class="text-primary text-decoration-none">+91-9971124567</a></p>
                   </div>
                </div>
-            </div>
+               
+               
+    </div>
+            
+            
+            
+            
+            
          <?php endif; ?>
       </div>
       

@@ -13,6 +13,18 @@ use CodeIgniter\Router\RouteCollection;
 
 /**
  * --------------------------------------------------------------------
+ * Debug Routes (Remove in production)
+ * --------------------------------------------------------------------
+ */
+$routes->get('/debug/user-edit/(:num)', function($id) {
+    echo "<h2>Debug User Edit Route</h2>";
+    echo "<p>User ID: " . $id . "</p>";
+    echo "<p>Route is working!</p>";
+    echo "<p><a href='/admin/user-management/edit/" . $id . "'>Try actual edit route</a></p>";
+});
+
+/**
+ * --------------------------------------------------------------------
  * Public Routes
  * --------------------------------------------------------------------
  * These routes are accessible to all visitors without authentication.

@@ -8,47 +8,40 @@
                   <div class="footer-add">
                      <p>We make your dream more beautiful & enjoyful with lots of happiness.</p>
                   </div>
-                 <div class="foot-socials">
-    <ul>
-        <li>
-            <a href="https://www.facebook.com/MyFairHolidays" target="_blank" title="Facebook">
-                <i class="fa-brands fa-facebook-f"></i>
-            </a>
-        </li>
-
-        <li>
-            <a href="https://www.instagram.com/myfairholidays/" target="_blank" title="Instagram">
-                <i class="fa-brands fa-instagram"></i>
-            </a>
-        </li>
-
-        <li>
-            <a href="https://twitter.com/MyFairHolidays" target="_blank" title="Twitter">
-                <i class="fa-brands fa-twitter"></i>
-            </a>
-        </li>
-
-        <li>
-            <a href="https://www.linkedin.com/company/my-fair-holidays" target="_blank" title="LinkedIn">
-                <i class="fa-brands fa-linkedin-in"></i>
-            </a>
-        </li>
-
-
-        <li>
-            <a href="https://www.youtube.com/channel/UCWpKAllkfYN6fUN_3D2A4Bw" target="_blank" title="YouTube">
-                <i class="fa-brands fa-youtube"></i>
-            </a>
-        </li>
-
-        <li>
-            <a href="https://wa.me/9971124567" target="_blank" title="WhatsApp">
-                <i class="fa-brands fa-whatsapp"></i>
-            </a>
-        </li>
-    </ul>
-</div>
-
+                  <div class="foot-socials">
+                     <ul>
+                        <li>
+                           <a href="https://www.facebook.com/MyFairHolidays" target="_blank" title="Facebook">
+                           <i class="fa-brands fa-facebook-f"></i>
+                           </a>
+                        </li>
+                        <li>
+                           <a href="https://www.instagram.com/myfairholidays/" target="_blank" title="Instagram">
+                           <i class="fa-brands fa-instagram"></i>
+                           </a>
+                        </li>
+                        <li>
+                           <a href="https://twitter.com/MyFairHolidays" target="_blank" title="Twitter">
+                           <i class="fa-brands fa-twitter"></i>
+                           </a>
+                        </li>
+                        <li>
+                           <a href="https://www.linkedin.com/company/my-fair-holidays" target="_blank" title="LinkedIn">
+                           <i class="fa-brands fa-linkedin-in"></i>
+                           </a>
+                        </li>
+                        <li>
+                           <a href="https://www.youtube.com/channel/UCWpKAllkfYN6fUN_3D2A4Bw" target="_blank" title="YouTube">
+                           <i class="fa-brands fa-youtube"></i>
+                           </a>
+                        </li>
+                        <li>
+                           <a href="https://wa.me/9971124567" target="_blank" title="WhatsApp">
+                           <i class="fa-brands fa-whatsapp"></i>
+                           </a>
+                        </li>
+                     </ul>
+                  </div>
                </div>
             </div>
             <div class="col-lg-2 col-md-6">
@@ -61,7 +54,7 @@
                      <li><a href="<?= base_url('/testimonials') ?>">Testimonials</a></li>
                      <li><a href="<?= base_url('/contact') ?>">Contact Us</a></li>
                      <li><a href="<?= base_url('/payment') ?>">Payment</a></li>
-                     <li><a href="<?= base_url('/register-as-agent') ?>">Register as Agent</a></li>
+                     <li><a href="<?= base_url('/auth/register') ?>">Register as Agent</a></li>
                   </ul>
                </div>
             </div>
@@ -70,9 +63,9 @@
                   <h4 class="widget-title">Domestic</h4>
                   <ul class="footer-menu">
                      <?php if (!empty($footerDomesticDestinations) && is_array($footerDomesticDestinations)): ?>
-                        <?php foreach (array_slice($footerDomesticDestinations, 0, 6) as $destination): ?>
-                           <li><a href="<?= base_url('/hotels?search=&destination_id=' . $destination['id']) ?>"><?= esc($destination['name']) ?></a></li>
-                        <?php endforeach; ?>
+                     <?php foreach (array_slice($footerDomesticDestinations, 0, 6) as $destination): ?>
+                     <li><a href="<?= base_url('/hotels?search=&destination_id=' . $destination['id']) ?>"><?= esc($destination['name']) ?></a></li>
+                     <?php endforeach; ?>
                      <?php endif; ?>
                   </ul>
                </div>
@@ -82,9 +75,9 @@
                   <h4 class="widget-title">International</h4>
                   <ul class="footer-menu">
                      <?php if (!empty($footerInternationalDestinations) && is_array($footerInternationalDestinations)): ?>
-                        <?php foreach (array_slice($footerInternationalDestinations, 0, 6) as $destination): ?>
-                           <li><a href="<?= base_url('/hotels?search=&destination_id=' . $destination['id']) ?>"><?= esc($destination['name']) ?></a></li>
-                        <?php endforeach; ?>
+                     <?php foreach (array_slice($footerInternationalDestinations, 0, 6) as $destination): ?>
+                     <li><a href="<?= base_url('/hotels?search=&destination_id=' . $destination['id']) ?>"><?= esc($destination['name']) ?></a></li>
+                     <?php endforeach; ?>
                      <?php endif; ?>
                   </ul>
                </div>
@@ -93,10 +86,9 @@
                <div class="footer-widget">
                   <h4 class="widget-title">Contact Info</h4>
                   <div class="footer-add">
-
                      <p><i class="fas fa-map-marker-alt me-2"></i><b>Head Office:</b> Office No O-445, (4th Floor)<br>Gaur City Center, Greater Noida<br>Uttar Pradesh 201307</p>
                      <p><i class="fas fa-map-marker-alt me-2"></i><b>Branch Office:</b> Broadway Shivpora, B.B.Cant<br>Srinagar Airport Distance: 6km<br>Dal Lake Distance: 3km<br>Pincode: 190004</p>
-                                          <p><i class="fas fa-phone me-2"></i><a href="tel:+919971124567" style="color: inherit;">+91-9971124567</a></p>
+                     <p><i class="fas fa-phone me-2"></i><a href="tel:+919971124567" style="color: inherit;">+91-9971124567</a></p>
                      <p><i class="fas fa-phone me-2"></i><a href="tel:+919582560106" style="color: inherit;">+91-9582560106</a></p>
                      <p><i class="fas fa-envelope me-2"></i><a href="mailto:info@myfairholidays.com" style="color: inherit;">info@myfairholidays.com</a></p>
                   </div>
